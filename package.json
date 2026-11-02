@@ -1,0 +1,28 @@
+{
+  "name": "oddball",
+  "private": true,
+  "version": "3.0.0",
+  "type": "module",
+  "description": "oddball: strange little browser games. Anti-Scam Arcade and Deadline Day, with room for more.",
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c magenta,cyan \"node --watch platform/server/index.js\" \"vite\"",
+    "build": "vite build",
+    "start": "node platform/server/index.js",
+    "serve": "npm run build && npm start"
+  },
+  "dependencies": {
+    "lucide-react": "0.383.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "ws": "8.18.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.3.1",
+    "autoprefixer": "10.4.20",
+    "concurrently": "8.2.2",
+    "postcss": "8.4.47",
+    "tailwindcss": "3.4.17",
+    "vite": "5.4.10"
+  },
+  "engines": { "node": ">=18.18" }
+}
