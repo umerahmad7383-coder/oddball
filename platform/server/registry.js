@@ -8,4 +8,4 @@ export const GAME_SERVERS = {
   'deadline-day': createDeadlineDayServer(),
 };
 /** Folders under dist/ that are game pages (dist/<id>/index.html). */
-export const PAGES = ['anti-scam', 'deadline-day'];
+export const PAGES = ['anti-scam', 'deadline-day', 'normal-form', 'tiny-nation'];

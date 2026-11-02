@@ -5,10 +5,12 @@
   "type": "module",
   "description": "oddball: strange little browser games. Anti-Scam Arcade and Deadline Day, with room for more.",
   "scripts": {
-    "dev": "concurrently -k -n server,client -c magenta,cyan \"node --watch platform/server/index.js\" \"vite\"",
-    "build": "vite build",
+    "dev": "node scripts/photos-manifest.mjs && concurrently -k -n server,client -c magenta,cyan \"node --watch platform/server/index.js\" \"vite\"",
+    "build": "node scripts/photos-manifest.mjs && vite build",
     "start": "node platform/server/index.js",
-    "serve": "npm run build && npm start"
+    "serve": "npm run build && npm start",
+    "photos": "node scripts/photos-manifest.mjs",
+    "make-code": "node scripts/make-code.mjs"
   },
   "dependencies": {
     "lucide-react": "0.383.0",
@@ -24,5 +26,7 @@
     "tailwindcss": "3.4.17",
     "vite": "5.4.10"
   },
-  "engines": { "node": ">=18.18" }
+  "engines": {
+    "node": ">=18.18"
+  }
 }

@@ -4,9 +4,10 @@ import { finalScore } from './rules.js';
 export const GROUP = { GK: 'GK', CB: 'DEF', LB: 'DEF', RB: 'DEF', CDM: 'MID', CM: 'MID', CAM: 'MID', LM: 'MID', RM: 'MID', LW: 'ATT', RW: 'ATT', ST: 'ATT' };
 /* Wide midfield and wide attack are the same job for this game. */
 const SAME = { LM: 'LW', LW: 'LM', RM: 'RW', RW: 'RM' };
+/* Realistic neighbours only: a winger is never "nearly" a full-back. */
 const RELATED = {
-  CB: ['CDM', 'LB', 'RB'], LB: ['LM', 'LW', 'CB'], RB: ['RM', 'RW', 'CB'], CDM: ['CM', 'CB'], CM: ['CDM', 'CAM'],
-  CAM: ['CM', 'ST', 'LW', 'RW'], LM: ['LB', 'CM'], RM: ['RB', 'CM'], LW: ['ST', 'LB', 'CAM'], RW: ['ST', 'RB', 'CAM'], ST: ['CAM', 'LW', 'RW'], GK: [],
+  CB: ['CDM'], LB: ['LM'], RB: ['RM'], CDM: ['CM', 'CB'], CM: ['CDM', 'CAM'],
+  CAM: ['CM', 'ST'], LM: ['LB', 'CM'], RM: ['RB', 'CM'], LW: ['ST', 'CAM'], RW: ['ST', 'CAM'], ST: ['CAM', 'LW', 'RW'], GK: [],
 };
 /** How well a footballer's position fits a slot: 'natural' | 'related' | 'line' | 'out'. */
 export function fit(pos, slot) {
@@ -72,15 +73,20 @@ export function evaluate(formationKey, lineup, lookup) {
     const f = lineup[i] ? lookup(lineup[i]) : null;
     return { i, slot: slot.pos, f, eff: effective(f, slot.pos), fit: f ? fit(f.pos, slot.pos) : null, links: 0, chem: 0 };
   });
+  // Only players in a natural or similar position build chemistry, and only with teammates who are too.
+  // So moving a star out of position can never be "worth it" for chemistry.
+  const inPos = (p) => p.f && (p.fit === 'natural' || p.fit === 'related');
   for (const [a, b] of form.links) {
+    if (!inPos(players[a]) || !inPos(players[b])) continue;
     const s = linkStrength(players[a].f, players[b].f);
     players[a].links += s; players[b].links += s;
   }
-  for (const p of players) p.chem = p.f ? FIT_CHEM[p.fit] + Math.min(6, p.links) : 0;
+  for (const p of players) p.chem = inPos(p) ? FIT_CHEM[p.fit] + Math.min(6, p.links) : 0;
   const n = form.slots.length;
   const avgEff = Math.round((players.reduce((t, p) => t + p.eff, 0) / n) * 10) / 10;
   const chemPct = Math.round((players.reduce((t, p) => t + p.chem, 0) / (n * 10)) * 100);
-  return { players, avgEff, chemPct, final: finalScore(avgEff, chemPct), links: form.links.map(([a, b]) => ({ a, b, s: linkStrength(players[a].f, players[b].f) })) };
+  const inPosAll = (i) => players[i].f && (players[i].fit === 'natural' || players[i].fit === 'related');
+  return { players, avgEff, chemPct, final: finalScore(avgEff, chemPct), links: form.links.map(([a, b]) => ({ a, b, s: inPosAll(a) && inPosAll(b) ? linkStrength(players[a].f, players[b].f) : 0 })) };
 }
 
 /** Put a newly signed footballer into the best empty slot. Returns a new lineup array. */
@@ -100,9 +106,22 @@ export function arrange(formationKey, ids, lookup) {
   const pool = ids.filter(Boolean).map(lookup).filter(Boolean);
   const out = Array(slots.length).fill(null);
   const pairs = [];
-  slots.forEach((s, i) => pool.forEach((f) => pairs.push({ i, f, score: effective(f, s.pos) * 10 + FIT_CHEM[fit(f.pos, s.pos)] })));
+  const FIT_RANK = { natural: 3, related: 2, line: 1, out: 0 };
+  slots.forEach((s, i) => pool.forEach((f) => pairs.push({ i, f, score: FIT_RANK[fit(f.pos, s.pos)] * 1000 + effective(f, s.pos) })));
   pairs.sort((a, b) => b.score - a.score);
   const usedF = new Set();
   for (const p of pairs) { if (out[p.i] || usedF.has(p.f.id)) continue; out[p.i] = p.f.id; usedF.add(p.f.id); }
+  // then try swapping pairs while that improves the final score
+  const look = (id) => pool.find((f) => f.id === id);
+  let best = evaluate(formationKey, out, look).final, improved = true, guard = 0;
+  while (improved && guard++ < 40) {
+    improved = false;
+    for (let a = 0; a < out.length; a++) for (let b = a + 1; b < out.length; b++) {
+      if (!out[a] && !out[b]) continue;
+      [out[a], out[b]] = [out[b], out[a]];
+      const sc = evaluate(formationKey, out, look).final;
+      if (sc > best + 0.001) { best = sc; improved = true; } else [out[a], out[b]] = [out[b], out[a]];
+    }
+  }
   return out;
 }

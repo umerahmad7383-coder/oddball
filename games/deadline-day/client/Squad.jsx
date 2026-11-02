@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Wand2, Lock, Unlock, Timer, Trophy, RotateCcw, LogOut, Check, ChevronDown, Home } from 'lucide-react';
 import { fmtM } from '../shared/rules.js';
 import { FORMATIONS, formationsFor, evaluate, arrange, fit } from '../shared/tactics.js';
-import { Pitch, Portrait, useNow, Confetti, fitLabel } from './components.jsx';
+import { Pitch, Portrait, useNow, Confetti, fitLabel, Sound } from './ui.jsx';
 
 /* Local copy of the lineup so swaps feel instant; the server copy wins whenever it changes. */
 function useLineup(team) {
@@ -12,7 +12,7 @@ function useLineup(team) {
   return [local, setLocal];
 }
 
-export function SquadEditor({ r, team, lookup, compact, mode }) {
+export function SquadEditor({ r, team, lookup, compact, ghost }) {
   const st = r.room.state;
   const [local, setLocal] = useLineup(team);
   const [sel, setSel] = useState(null);
@@ -21,9 +21,9 @@ export function SquadEditor({ r, team, lookup, compact, mode }) {
   const tap = (i) => {
     if (sel === null) { if (local.lineup[i]) setSel(i); return; }
     if (sel === i) { setSel(null); return; }
-    const next = local.lineup.slice(); [next[sel], next[i]] = [next[i], next[sel]];
-    setSel(null); push(local.formation, next);
+    swap(sel, i);
   };
+  const swap = (a, b) => { const next = local.lineup.slice(); [next[a], next[b]] = [next[b], next[a]]; setSel(null); Sound.play('click'); push(local.formation, next); };
   const ids = team.squad.map((s) => s.id);
   const selF = sel !== null ? lookup(local.lineup[sel]) : null;
   return (
@@ -34,9 +34,9 @@ export function SquadEditor({ r, team, lookup, compact, mode }) {
         ))}
         <button className="best" disabled={!ids.length} onClick={() => { setSel(null); push(local.formation, arrange(local.formation, ids, lookup)); }}><Wand2 size={14} /> Best XI</button>
       </div>
-      <Pitch formation={local.formation} lineup={local.lineup} lookup={lookup} editable selected={sel} onSlot={tap} compact={compact} />
+      <Pitch formation={local.formation} lineup={local.lineup} lookup={lookup} editable selected={sel} onSlot={tap} onSwap={swap} compact={compact} ghost={ghost} />
       <div className="squad-hint">
-        {selF ? <>Moving <b>{selF.name}</b> ({fitLabel(selF.pos, FORMATIONS[local.formation].slots[sel].pos)}). Tap another spot to swap.</> : ids.length ? 'Tap two spots to swap them. Links light up when teammates share a club, nation or league.' : 'Your signings will appear here.'}
+        {selF ? <>Moving <b>{selF.name}</b> ({fitLabel(selF.pos, FORMATIONS[local.formation].slots[sel].pos)}). Tap another spot to swap.</> : ghost ? <>The faded player shows where <b>{ghost.f.name}</b> would go.</> : ids.length ? 'Drag a player onto another spot, or tap two spots, to swap. Lines glow when teammates share a club, nation or league.' : 'Your signings will appear here as you win them.'}
       </div>
       <div className="squad-stats">
         <div><small>Avg rating</small><b>{ev.avgEff}</b></div>
