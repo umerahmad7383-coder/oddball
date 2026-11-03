@@ -1,252 +1,247 @@
 DEADLINE DAY PHOTO CHECKLIST
-Save each photo with EXACTLY this file name (.jpg, .png or .webp all work), then upload to public/photos/.
-Players without a photo keep the silhouette, so you can stop any time.
+===========================
+243 / 243 real players included. Academy players use generated silhouettes.
 
-== MUST-HAVES (88+): the stars everyone bids on - 23 players ==
-[ ] Erling Haaland.jpg   (91, Man City)
-[ ] Harry Kane.jpg   (91, Bayern Munich)
-[ ] Kylian Mbappé.jpg   (91, Real Madrid)
-[ ] Lamine Yamal.jpg   (91, Barcelona)
-[ ] Ousmane Dembélé.jpg   (90, PSG)
-[ ] Michael Olise.jpg   (89, Bayern Munich)
-[ ] Pedri.jpg   (89, Barcelona)
-[ ] Rodri.jpg   (89, Barcelona)
-[ ] Thibaut Courtois.jpg   (89, Real Madrid)
-[ ] Vinícius Júnior.jpg   (89, Real Madrid)
-[ ] Vitinha.jpg   (89, PSG)
-[ ] Alisson.jpg   (88, Liverpool)
-[ ] Bukayo Saka.jpg   (88, Arsenal)
-[ ] Declan Rice.jpg   (88, Arsenal)
-[ ] Federico Valverde.jpg   (88, Real Madrid)
-[ ] Gianluigi Donnarumma.jpg   (88, Man City)
-[ ] Jamal Musiala.jpg   (88, Bayern Munich)
-[ ] Jude Bellingham.jpg   (88, Real Madrid)
-[ ] Khvicha Kvaratskhelia.jpg   (88, PSG)
-[ ] Lautaro Martínez.jpg   (88, Inter)
-[ ] Lionel Messi.jpg   (88, Inter Miami)
-[ ] Raphinha.jpg   (88, Barcelona)
-[ ] William Saliba.jpg   (88, Arsenal)
-
-== NICE TO HAVE (85-87) - 48 players ==
-[ ] Achraf Hakimi.jpg   (87, PSG)
-[ ] Alexander Isak.jpg   (87, Liverpool)
-[ ] Cole Palmer.jpg   (87, Chelsea)
-[ ] Florian Wirtz.jpg   (87, Liverpool)
-[ ] João Neves.jpg   (87, PSG)
-[ ] Joshua Kimmich.jpg   (87, Bayern Munich)
-[ ] Julián Álvarez.jpg   (87, Atlético Madrid)
-[ ] Mike Maignan.jpg   (87, AC Milan)
-[ ] Moisés Caicedo.jpg   (87, Chelsea)
-[ ] Nuno Mendes.jpg   (87, PSG)
-[ ] Virgil van Dijk.jpg   (87, Liverpool)
-[ ] Alessandro Bastoni.jpg   (86, Inter)
-[ ] Alexis Mac Allister.jpg   (86, Liverpool)
-[ ] Bruno Fernandes.jpg   (86, Man United)
-[ ] David Raya.jpg   (86, Arsenal)
-[ ] Désiré Doué.jpg   (86, PSG)
-[ ] Enzo Fernández.jpg   (86, Man City)
-[ ] Gabriel Magalhães.jpg   (86, Arsenal)
-[ ] Jan Oblak.jpg   (86, Atlético Madrid)
-[ ] Luis Díaz.jpg   (86, Bayern Munich)
-[ ] Martín Zubimendi.jpg   (86, Arsenal)
-[ ] Mohamed Salah.jpg   (86, Trabzonspor)
-[ ] Nicolò Barella.jpg   (86, Inter)
-[ ] Rúben Dias.jpg   (86, Man City)
-[ ] Scott McTominay.jpg   (86, Napoli)
-[ ] Victor Osimhen.jpg   (86, Galatasaray)
-[ ] Aurélien Tchouaméni.jpg   (85, Real Madrid)
-[ ] Bernardo Silva.jpg   (85, Real Madrid)
-[ ] Bradley Barcola.jpg   (85, Liverpool)
-[ ] Bruno Guimarães.jpg   (85, Arsenal)
-[ ] Dominik Szoboszlai.jpg   (85, Liverpool)
-[ ] Emiliano Martínez.jpg   (85, Chelsea)
-[ ] Frenkie de Jong.jpg   (85, Barcelona)
-[ ] Gregor Kobel.jpg   (85, Dortmund)
-[ ] Joan García.jpg   (85, Barcelona)
-[ ] Joško Gvardiol.jpg   (85, Man City)
-[ ] Jules Koundé.jpg   (85, Barcelona)
-[ ] Kenan Yıldız.jpg   (85, Juventus)
-[ ] Kevin De Bruyne.jpg   (85, Napoli)
-[ ] Marquinhos.jpg   (85, PSG)
-[ ] Martin Ødegaard.jpg   (85, Arsenal)
-[ ] Pau Cubarsí.jpg   (85, Barcelona)
-[ ] Phil Foden.jpg   (85, Man City)
-[ ] Ryan Gravenberch.jpg   (85, Liverpool)
-[ ] Sandro Tonali.jpg   (85, Tottenham)
-[ ] Trent Alexander-Arnold.jpg   (85, Real Madrid)
-[ ] Viktor Gyökeres.jpg   (85, Arsenal)
-[ ] Willian Pacho.jpg   (85, PSG)
-
-== EVERYONE ELSE (fine to leave as silhouettes) - 172 players ==
-[ ] Arda Güler.jpg   (84, Real Madrid)
-[ ] Bryan Mbeumo.jpg   (84, Man United)
-[ ] Christian Pulisic.jpg   (84, AC Milan)
-[ ] Cristian Romero.jpg   (84, Atlético Madrid)
-[ ] Dayot Upamecano.jpg   (84, Bayern Munich)
-[ ] Diogo Costa.jpg   (84, Porto)
-[ ] Eberechi Eze.jpg   (84, Arsenal)
-[ ] Éder Militão.jpg   (84, Real Madrid)
-[ ] Ederson.jpg   (84, Fenerbahçe)
-[ ] Elliot Anderson.jpg   (84, Man City)
-[ ] Federico Dimarco.jpg   (84, Inter)
-[ ] Gleison Bremer.jpg   (84, Juventus)
-[ ] Hakan Çalhanoğlu.jpg   (84, Inter)
-[ ] Hugo Ekitiké.jpg   (84, Liverpool)
-[ ] Ibrahima Konaté.jpg   (84, Real Madrid)
-[ ] Jonathan Tah.jpg   (84, Bayern Munich)
-[ ] Jurriën Timber.jpg   (84, Arsenal)
-[ ] Manuel Neuer.jpg   (84, Bayern Munich)
-[ ] Marcus Thuram.jpg   (84, Inter)
-[ ] Micky van de Ven.jpg   (84, Tottenham)
-[ ] Morgan Rogers.jpg   (84, Chelsea)
-[ ] Nico Williams.jpg   (84, Athletic Club)
-[ ] Rafael Leão.jpg   (84, Galatasaray)
-[ ] Rayan Cherki.jpg   (84, Man City)
-[ ] Reece James.jpg   (84, Chelsea)
-[ ] Robert Lewandowski.jpg   (84, Chicago Fire)
-[ ] Serhou Guirassy.jpg   (84, Dortmund)
-[ ] Theo Hernández.jpg   (84, Al Hilal)
-[ ] Yan Diomande.jpg   (84, Real Madrid)
-[ ] Yassine Bounou.jpg   (84, Al Hilal)
-[ ] Alejandro Grimaldo.jpg   (83, Atlético Madrid)
-[ ] Anthony Gordon.jpg   (83, Barcelona)
-[ ] Antoine Griezmann.jpg   (83, Orlando City)
-[ ] Antonio Rüdiger.jpg   (83, Real Madrid)
-[ ] Cody Gakpo.jpg   (83, Liverpool)
-[ ] Cristiano Ronaldo.jpg   (83, Al Nassr)
-[ ] Dani Olmo.jpg   (83, Barcelona)
-[ ] Dean Huijsen.jpg   (83, Real Madrid)
-[ ] Eduardo Camavinga.jpg   (83, Real Madrid)
-[ ] Fabián Ruiz.jpg   (83, PSG)
-[ ] Ferran Torres.jpg   (83, PSG)
-[ ] Guglielmo Vicario.jpg   (83, Juventus)
-[ ] João Pedro.jpg   (83, Chelsea)
-[ ] Jordan Pickford.jpg   (83, Everton)
-[ ] Luka Modrić.jpg   (83, AC Milan)
-[ ] Marc Cucurella.jpg   (83, Real Madrid)
-[ ] Matheus Cunha.jpg   (83, Man United)
-[ ] Mikel Merino.jpg   (83, Arsenal)
-[ ] Mikel Oyarzabal.jpg   (83, Real Sociedad)
-[ ] Nico Schlotterbeck.jpg   (83, Dortmund)
-[ ] Pedro Porro.jpg   (83, Tottenham)
-[ ] Rodrygo.jpg   (83, Real Madrid)
-[ ] Son Heung-min.jpg   (83, LAFC)
-[ ] Stanislav Lobotka.jpg   (83, Napoli)
-[ ] Tijjani Reijnders.jpg   (83, Al Qadsiah)
-[ ] Unai Simón.jpg   (83, Athletic Club)
-[ ] Alejandro Balde.jpg   (82, Barcelona)
-[ ] Aleksandar Pavlović.jpg   (82, Bayern Munich)
-[ ] Alessandro Buongiorno.jpg   (82, Napoli)
-[ ] Álex Baena.jpg   (82, Atlético Madrid)
-[ ] Alphonso Davies.jpg   (82, Bayern Munich)
-[ ] Carlos Baleba.jpg   (82, Man United)
-[ ] Estêvão.jpg   (82, Chelsea)
-[ ] Gavi.jpg   (82, Barcelona)
-[ ] Granit Xhaka.jpg   (82, Sunderland)
-[ ] Jeremie Frimpong.jpg   (82, Liverpool)
-[ ] Jérémy Doku.jpg   (82, Man City)
-[ ] Jonathan David.jpg   (82, Atlético Madrid)
-[ ] Kai Havertz.jpg   (82, Arsenal)
-[ ] Karim Benzema.jpg   (82, Al Hilal)
-[ ] Kim Min-jae.jpg   (82, Bayern Munich)
-[ ] Leon Goretzka.jpg   (82, Aston Villa)
-[ ] Lisandro Martínez.jpg   (82, Man United)
-[ ] Lucas Chevalier.jpg   (82, PSG)
-[ ] Manuel Akanji.jpg   (82, Inter)
-[ ] Mohammed Kudus.jpg   (82, Tottenham)
-[ ] Ollie Watkins.jpg   (82, Al Hilal)
-[ ] Pablo Barrios.jpg   (82, Atlético Madrid)
-[ ] Piero Hincapié.jpg   (82, Arsenal)
-[ ] Rodrigo De Paul.jpg   (82, Inter Miami)
-[ ] Ronald Araújo.jpg   (82, Liverpool)
-[ ] Rúben Neves.jpg   (82, Al Hilal)
-[ ] Savinho.jpg   (82, Tottenham)
-[ ] Xavi Simons.jpg   (82, Tottenham)
-[ ] Adam Wharton.jpg   (81, Crystal Palace)
-[ ] Alexander Sørloth.jpg   (81, Atlético Madrid)
-[ ] Amad Diallo.jpg   (81, Man United)
-[ ] Benjamin Šeško.jpg   (81, Man United)
-[ ] Denzel Dumfries.jpg   (81, Real Madrid)
-[ ] Dušan Vlahović.jpg   (81, Beşiktaş)
-[ ] Ezri Konsa.jpg   (81, Arsenal)
-[ ] Gabriel Martinelli.jpg   (81, Al Hilal)
-[ ] Iliman Ndiaye.jpg   (81, Man City)
-[ ] Isco.jpg   (81, Real Betis)
-[ ] Ismael Saibari.jpg   (81, Bayern Munich)
-[ ] Jan Paul van Hecke.jpg   (81, Tottenham)
-[ ] Kaoru Mitoma.jpg   (81, Brighton)
-[ ] Lee Kang-in.jpg   (81, Atlético Madrid)
-[ ] Leroy Sané.jpg   (81, Galatasaray)
-[ ] Levi Colwill.jpg   (81, Chelsea)
-[ ] Maghnes Akliouche.jpg   (81, PSG)
-[ ] Matthijs de Ligt.jpg   (81, Man United)
-[ ] Morgan Gibbs-White.jpg   (81, Nott’m Forest)
-[ ] Morten Hjulmand.jpg   (81, Atlético Madrid)
-[ ] Murillo.jpg   (81, Nott’m Forest)
-[ ] Noni Madueke.jpg   (81, Arsenal)
-[ ] Omar Marmoush.jpg   (81, Tottenham)
-[ ] Patrik Schick.jpg   (81, Leverkusen)
-[ ] Pedro Neto.jpg   (81, Chelsea)
-[ ] Randal Kolo Muani.jpg   (81, Juventus)
-[ ] Rasmus Højlund.jpg   (81, Napoli)
-[ ] Riccardo Calafiori.jpg   (81, Arsenal)
-[ ] Serge Gnabry.jpg   (81, Bayern Munich)
-[ ] Takefusa Kubo.jpg   (81, Real Sociedad)
-[ ] Youri Tielemans.jpg   (81, Man United)
-[ ] Alejandro Garnacho.jpg   (80, Aston Villa)
-[ ] Álvaro Carreras.jpg   (80, Real Madrid)
-[ ] Andy Robertson.jpg   (80, Tottenham)
-[ ] Bart Verbruggen.jpg   (80, Brighton)
-[ ] Brahim Díaz.jpg   (80, Real Madrid)
-[ ] Conor Gallagher.jpg   (80, Atlético Madrid)
-[ ] Curtis Jones.jpg   (80, Inter)
-[ ] Dean Henderson.jpg   (80, Crystal Palace)
-[ ] Dejan Kulusevski.jpg   (80, Tottenham)
-[ ] Destiny Udogie.jpg   (80, Tottenham)
-[ ] Dominic Solanke.jpg   (80, Tottenham)
-[ ] Giovani Lo Celso.jpg   (80, Real Betis)
-[ ] Gonçalo Ramos.jpg   (80, AC Milan)
-[ ] Jack Grealish.jpg   (80, Everton)
-[ ] Jean-Philippe Mateta.jpg   (80, Crystal Palace)
-[ ] João Félix.jpg   (80, Al Nassr)
-[ ] João Gomes.jpg   (80, Aston Villa)
-[ ] John Stones.jpg   (80, Inter)
-[ ] Kalidou Koulibaly.jpg   (80, Al Hilal)
-[ ] Karim Adeyemi.jpg   (80, Barcelona)
-[ ] Koke.jpg   (80, Atlético Madrid)
-[ ] Leandro Trossard.jpg   (80, Beşiktaş)
-[ ] Mateus Fernandes.jpg   (80, Tottenham)
-[ ] Maxence Lacroix.jpg   (80, Chelsea)
-[ ] Milos Kerkez.jpg   (80, Liverpool)
-[ ] Nathan Aké.jpg   (80, Fenerbahçe)
-[ ] Nick Woltemade.jpg   (80, Juventus)
-[ ] Nico González.jpg   (80, Newcastle)
-[ ] Nicolas Jackson.jpg   (80, Aston Villa)
-[ ] Riyad Mahrez.jpg   (80, Al Ahli)
-[ ] Romelu Lukaku.jpg   (80, Fenerbahçe)
-[ ] Sadio Mané.jpg   (80, Al Nassr)
-[ ] Thomas Müller.jpg   (80, Vancouver)
-[ ] Tino Livramento.jpg   (80, Newcastle)
-[ ] Weston McKennie.jpg   (80, Juventus)
-[ ] Youssef En-Nesyri.jpg   (80, Al Ittihad)
-[ ] Ben White.jpg   (79, Arsenal)
-[ ] Casemiro.jpg   (79, Inter Miami)
-[ ] Chris Wood.jpg   (79, Nott’m Forest)
-[ ] Djed Spence.jpg   (79, Inter)
-[ ] Ismaïla Sarr.jpg   (79, Crystal Palace)
-[ ] Jamie Gittens.jpg   (79, Chelsea)
-[ ] Jérémy Jacquet.jpg   (79, Liverpool)
-[ ] Kobbie Mainoo.jpg   (79, Man United)
-[ ] Matheus Nunes.jpg   (79, Man City)
-[ ] Neymar.jpg   (79, Santos)
-[ ] Noussair Mazraoui.jpg   (79, Man United)
-[ ] Pervis Estupiñán.jpg   (79, AC Milan)
-[ ] Santiago Giménez.jpg   (79, Porto)
-[ ] Tyler Adams.jpg   (79, Bournemouth)
-[ ] Yoane Wissa.jpg   (79, Newcastle)
-[ ] Ángel Di María.jpg   (78, Rosario Central)
-[ ] Ayyoub Bouaddi.jpg   (78, Man City)
-[ ] Franco Mastantuono.jpg   (78, Fiorentina)
-[ ] Liam Delap.jpg   (78, Nott’m Forest)
-[ ] Luis Suárez.jpg   (78, Inter Miami)
-[ ] Senne Lammens.jpg   (78, Man United)
+[x] Erling Haaland — erling-haaland.png
+[x] Gianluigi Donnarumma — gianluigi-donnarumma.png
+[x] Enzo Fernández — enzo-fernandez.png
+[x] Rúben Dias — ruben-dias.png
+[x] Phil Foden — phil-foden.png
+[x] Joško Gvardiol — josko-gvardiol.png
+[x] Elliot Anderson — elliot-anderson.png
+[x] Rayan Cherki — rayan-cherki.png
+[x] Jérémy Doku — jeremy-doku.png
+[x] Iliman Ndiaye — iliman-ndiaye.png
+[x] Ayyoub Bouaddi — ayyoub-bouaddi.png
+[x] Matheus Nunes — matheus-nunes.png
+[x] Virgil van Dijk — virgil-van-dijk.png
+[x] Alisson — alisson.png
+[x] Florian Wirtz — florian-wirtz.png
+[x] Alexander Isak — alexander-isak.png
+[x] Alexis Mac Allister — alexis-mac-allister.png
+[x] Ryan Gravenberch — ryan-gravenberch.png
+[x] Bradley Barcola — bradley-barcola.png
+[x] Dominik Szoboszlai — dominik-szoboszlai.png
+[x] Hugo Ekitiké — hugo-ekitike.png
+[x] Ronald Araújo — ronald-araujo.png
+[x] Cody Gakpo — cody-gakpo.png
+[x] Jeremie Frimpong — jeremie-frimpong.png
+[x] Milos Kerkez — milos-kerkez.png
+[x] Jérémy Jacquet — jeremy-jacquet.png
+[x] Bukayo Saka — bukayo-saka.png
+[x] William Saliba — william-saliba.png
+[x] Declan Rice — declan-rice.png
+[x] Martin Ødegaard — martin-degaard.png
+[x] Gabriel Magalhães — gabriel-magalhaes.png
+[x] David Raya — david-raya.png
+[x] Bruno Guimarães — bruno-guimaraes.png
+[x] Viktor Gyökeres — viktor-gyokeres.png
+[x] Martín Zubimendi — martin-zubimendi.png
+[x] Eberechi Eze — eberechi-eze.png
+[x] Mikel Merino — mikel-merino.png
+[x] Kai Havertz — kai-havertz.png
+[x] Jurriën Timber — jurrien-timber.png
+[x] Piero Hincapié — piero-hincapie.png
+[x] Ezri Konsa — ezri-konsa.png
+[x] Riccardo Calafiori — riccardo-calafiori.png
+[x] Noni Madueke — noni-madueke.png
+[x] Ben White — ben-white.png
+[x] Cole Palmer — cole-palmer.png
+[x] Moisés Caicedo — moises-caicedo.png
+[x] Morgan Rogers — morgan-rogers.png
+[x] Emiliano Martínez — emiliano-martinez.png
+[x] Reece James — reece-james.png
+[x] João Pedro — joao-pedro.png
+[x] Levi Colwill — levi-colwill.png
+[x] Pedro Neto — pedro-neto.png
+[x] Estêvão — estevao.png
+[x] Jamie Gittens — jamie-gittens.png
+[x] Maxence Lacroix — maxence-lacroix.png
+[x] Bruno Fernandes — bruno-fernandes.png
+[x] Bryan Mbeumo — bryan-mbeumo.png
+[x] Matheus Cunha — matheus-cunha.png
+[x] Carlos Baleba — carlos-baleba.png
+[x] Lisandro Martínez — lisandro-martinez.png
+[x] Youri Tielemans — youri-tielemans.png
+[x] Matthijs de Ligt — matthijs-de-ligt.png
+[x] Benjamin Šeško — benjamin-sesko.png
+[x] Amad Diallo — amad-diallo.png
+[x] Kobbie Mainoo — kobbie-mainoo.png
+[x] Noussair Mazraoui — noussair-mazraoui.png
+[x] Senne Lammens — senne-lammens.png
+[x] Sandro Tonali — sandro-tonali.png
+[x] Savinho — savinho.png
+[x] Pedro Porro — pedro-porro.png
+[x] Micky van de Ven — micky-van-de-ven.png
+[x] Xavi Simons — xavi-simons.png
+[x] Mohammed Kudus — mohammed-kudus.png
+[x] Omar Marmoush — omar-marmoush.png
+[x] Andy Robertson — andy-robertson.png
+[x] Jan Paul van Hecke — jan-paul-van-hecke.png
+[x] Mateus Fernandes — mateus-fernandes.png
+[x] Dejan Kulusevski — dejan-kulusevski.png
+[x] Destiny Udogie — destiny-udogie.png
+[x] Dominic Solanke — dominic-solanke.png
+[x] Nicolas Jackson — nicolas-jackson.png
+[x] Leon Goretzka — leon-goretzka.png
+[x] João Gomes — joao-gomes.png
+[x] Alejandro Garnacho — alejandro-garnacho.png
+[x] Nico González — nico-gonzalez.png
+[x] Tino Livramento — tino-livramento.png
+[x] Yoane Wissa — yoane-wissa.png
+[x] Morgan Gibbs-White — morgan-gibbs-white.png
+[x] Murillo — murillo.png
+[x] Liam Delap — liam-delap.png
+[x] Chris Wood — chris-wood.png
+[x] Adam Wharton — adam-wharton.png
+[x] Jean-Philippe Mateta — jean-philippe-mateta.png
+[x] Dean Henderson — dean-henderson.png
+[x] Ismaïla Sarr — ismaila-sarr.png
+[x] Jordan Pickford — jordan-pickford.png
+[x] Jack Grealish — jack-grealish.png
+[x] Kaoru Mitoma — kaoru-mitoma.png
+[x] Bart Verbruggen — bart-verbruggen.png
+[x] Tyler Adams — tyler-adams.png
+[x] Granit Xhaka — granit-xhaka.png
+[x] Kylian Mbappé — kylian-mbappe.png
+[x] Vinícius Júnior — vinicius-junior.png
+[x] Jude Bellingham — jude-bellingham.png
+[x] Thibaut Courtois — thibaut-courtois.png
+[x] Federico Valverde — federico-valverde.png
+[x] Trent Alexander-Arnold — trent-alexander-arnold.png
+[x] Bernardo Silva — bernardo-silva.png
+[x] Aurélien Tchouaméni — aurelien-tchouameni.png
+[x] Ibrahima Konaté — ibrahima-konate.png
+[x] Yan Diomande — yan-diomande.png
+[x] Antonio Rüdiger — antonio-rudiger.png
+[x] Éder Militão — eder-militao.png
+[x] Rodrygo — rodrygo.png
+[x] Marc Cucurella — marc-cucurella.png
+[x] Eduardo Camavinga — eduardo-camavinga.png
+[x] Arda Güler — arda-guler.png
+[x] Dean Huijsen — dean-huijsen.png
+[x] Denzel Dumfries — denzel-dumfries.png
+[x] Álvaro Carreras — alvaro-carreras.png
+[x] Brahim Díaz — brahim-diaz.png
+[x] Lamine Yamal — lamine-yamal.png
+[x] Rodri — rodri.png
+[x] Raphinha — raphinha.png
+[x] Pedri — pedri.png
+[x] Frenkie de Jong — frenkie-de-jong.png
+[x] Jules Koundé — jules-kounde.png
+[x] Pau Cubarsí — pau-cubarsi.png
+[x] Joan García — joan-garcia.png
+[x] Anthony Gordon — anthony-gordon.png
+[x] Dani Olmo — dani-olmo.png
+[x] Alejandro Balde — alejandro-balde.png
+[x] Gavi — gavi.png
+[x] Karim Adeyemi — karim-adeyemi.png
+[x] Julián Álvarez — julian-alvarez.png
+[x] Jan Oblak — jan-oblak.png
+[x] Cristian Romero — cristian-romero.png
+[x] Alejandro Grimaldo — alejandro-grimaldo.png
+[x] Jonathan David — jonathan-david.png
+[x] Álex Baena — alex-baena.png
+[x] Lee Kang-in — lee-kang-in.png
+[x] Morten Hjulmand — morten-hjulmand.png
+[x] Pablo Barrios — pablo-barrios.png
+[x] Alexander Sørloth — alexander-s-rloth.png
+[x] Koke — koke.png
+[x] Conor Gallagher — conor-gallagher.png
+[x] Nico Williams — nico-williams.png
+[x] Unai Simón — unai-simon.png
+[x] Mikel Oyarzabal — mikel-oyarzabal.png
+[x] Takefusa Kubo — takefusa-kubo.png
+[x] Isco — isco.png
+[x] Giovani Lo Celso — giovani-lo-celso.png
+[x] Lautaro Martínez — lautaro-martinez.png
+[x] Nicolò Barella — nicolo-barella.png
+[x] Alessandro Bastoni — alessandro-bastoni.png
+[x] Hakan Çalhanoğlu — hakan-calhanoglu.png
+[x] Federico Dimarco — federico-dimarco.png
+[x] Marcus Thuram — marcus-thuram.png
+[x] Manuel Akanji — manuel-akanji.png
+[x] John Stones — john-stones.png
+[x] Curtis Jones — curtis-jones.png
+[x] Djed Spence — djed-spence.png
+[x] Mike Maignan — mike-maignan.png
+[x] Christian Pulisic — christian-pulisic.png
+[x] Luka Modrić — luka-modric.png
+[x] Gonçalo Ramos — goncalo-ramos.png
+[x] Pervis Estupiñán — pervis-estupinan.png
+[x] Gleison Bremer — gleison-bremer.png
+[x] Kenan Yıldız — kenan-y-ld-z.png
+[x] Randal Kolo Muani — randal-kolo-muani.png
+[x] Guglielmo Vicario — guglielmo-vicario.png
+[x] Nick Woltemade — nick-woltemade.png
+[x] Weston McKennie — weston-mckennie.png
+[x] Kevin De Bruyne — kevin-de-bruyne.png
+[x] Scott McTominay — scott-mctominay.png
+[x] Stanislav Lobotka — stanislav-lobotka.png
+[x] Alessandro Buongiorno — alessandro-buongiorno.png
+[x] Rasmus Højlund — rasmus-h-jlund.png
+[x] Franco Mastantuono — franco-mastantuono.png
+[x] Harry Kane — harry-kane.png
+[x] Michael Olise — michael-olise.png
+[x] Jamal Musiala — jamal-musiala.png
+[x] Joshua Kimmich — joshua-kimmich.png
+[x] Luis Díaz — luis-diaz.png
+[x] Manuel Neuer — manuel-neuer.png
+[x] Jonathan Tah — jonathan-tah.png
+[x] Dayot Upamecano — dayot-upamecano.png
+[x] Alphonso Davies — alphonso-davies.png
+[x] Kim Min-jae — kim-min-jae.png
+[x] Serge Gnabry — serge-gnabry.png
+[x] Aleksandar Pavlović — aleksandar-pavlovic.png
+[x] Ismael Saibari — ismael-saibari.png
+[x] Serhou Guirassy — serhou-guirassy.png
+[x] Gregor Kobel — gregor-kobel.png
+[x] Nico Schlotterbeck — nico-schlotterbeck.png
+[x] Patrik Schick — patrik-schick.png
+[x] Ousmane Dembélé — ousmane-dembele.png
+[x] Vitinha — vitinha.png
+[x] Khvicha Kvaratskhelia — khvicha-kvaratskhelia.png
+[x] Achraf Hakimi — achraf-hakimi.png
+[x] João Neves — joao-neves.png
+[x] Nuno Mendes — nuno-mendes.png
+[x] Marquinhos — marquinhos.png
+[x] Désiré Doué — desire-doue.png
+[x] Willian Pacho — willian-pacho.png
+[x] Fabián Ruiz — fabian-ruiz.png
+[x] Ferran Torres — ferran-torres.png
+[x] Lucas Chevalier — lucas-chevalier.png
+[x] Maghnes Akliouche — maghnes-akliouche.png
+[x] Cristiano Ronaldo — cristiano-ronaldo.png
+[x] Sadio Mané — sadio-mane.png
+[x] João Félix — joao-felix.png
+[x] Karim Benzema — karim-benzema.png
+[x] Theo Hernández — theo-hernandez.png
+[x] Yassine Bounou — yassine-bounou.png
+[x] Gabriel Martinelli — gabriel-martinelli.png
+[x] Ollie Watkins — ollie-watkins.png
+[x] Rúben Neves — ruben-neves.png
+[x] Kalidou Koulibaly — kalidou-koulibaly.png
+[x] Youssef En-Nesyri — youssef-en-nesyri.png
+[x] Riyad Mahrez — riyad-mahrez.png
+[x] Tijjani Reijnders — tijjani-reijnders.png
+[x] Lionel Messi — lionel-messi.png
+[x] Rodrigo De Paul — rodrigo-de-paul.png
+[x] Luis Suárez — luis-suarez.png
+[x] Casemiro — casemiro.png
+[x] Son Heung-min — son-heung-min.png
+[x] Thomas Müller — thomas-muller.png
+[x] Antoine Griezmann — antoine-griezmann.png
+[x] Robert Lewandowski — robert-lewandowski.png
+[x] Victor Osimhen — victor-osimhen.png
+[x] Rafael Leão — rafael-leao.png
+[x] Leroy Sané — leroy-sane.png
+[x] Romelu Lukaku — romelu-lukaku.png
+[x] Ederson — ederson.png
+[x] Nathan Aké — nathan-ake.png
+[x] Dušan Vlahović — dusan-vlahovic.png
+[x] Leandro Trossard — leandro-trossard.png
+[x] Mohamed Salah — mohamed-salah.png
+[x] Diogo Costa — diogo-costa.png
+[x] Santiago Giménez — santiago-gimenez.png
+[x] Neymar — neymar.png
+[x] Ángel Di María — angel-di-maria.png

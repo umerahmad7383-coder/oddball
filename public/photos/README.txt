@@ -1,20 +1,23 @@
 PLAYER PHOTOS FOR DEADLINE DAY
 ==============================
 
-1. Put image files in this folder (public/photos), one per player.
-2. Name each file after the player, exactly as the game spells them, e.g.
-     Erling Haaland.jpg
-     Kylian Mbappé.png      (accents optional: "Kylian Mbappe.png" also works)
-     Vinícius Júnior.webp
-   Accepted: .jpg .jpeg .png .webp .avif
-3. Square-ish head-and-shoulders photos look best. Keep each under ~300 KB.
-4. Commit. The site rebuilds and the cards pick the photos up automatically.
-   Players without a photo keep the silhouette.
+243 bundled local PNG headshots, matched to the existing real-player pool.
+No external image service or API key is needed while playing.
+Generated academy players intentionally keep their club-colour silhouette.
 
-Only use photos you're allowed to use. Wikimedia Commons (commons.wikimedia.org)
-has free-licence photos of most famous players, but the licence requires credit.
-Add one line per photo to credits.txt in this folder, e.g.
+Cards preserve the image proportions and leave space above the face for the
+rating and nation badge. Pitch tokens and signing lists use a tighter circle.
+Source and profile links are recorded in sources.json and credits.txt.
+The existing Photo credits button opens the credits from the landing screen.
 
-  Erling Haaland — photo by Jane Smith, CC BY-SA 4.0, via Wikimedia Commons
+To replace a photo:
+1. Replace its player-slug.png file in this folder, or remove that PNG before
+   adding a different format so only one image exists for that player.
+2. Use a transparent, tightly framed headshot with hair at the top and neck
+   or shoulders at the bottom. The bundled images provide framing examples.
+3. Run npm run photos, or build normally with npm run build.
+4. Keep the source/credit entries up to date for any replacements.
 
-and the game shows a "Photo credits" link automatically.
+Accepted image extensions: .jpg .jpeg .png .webp .avif .gif.
+Files may use the exact player name or the slug from shared/players.js.
+Missing or broken photos gracefully fall back to the existing silhouette.

@@ -48,7 +48,7 @@ function loadPhotos() {
   if (photoIndex) return;
   photoIndex = { files: {}, credits: false, loading: true };
   fetch('/photos/index.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => { photoIndex = j || { files: {}, credits: false }; photoListeners.forEach((f) => f()); })
-    .catch(() => { photoIndex = { files: {}, credits: false }; });
+    .catch(() => { photoIndex = { files: {}, credits: false }; photoListeners.forEach((f) => f()); });
 }
 export function usePhotos() {
   const [, bump] = useState(0);
@@ -71,12 +71,16 @@ const initials = (n) => n.split(' ').filter(Boolean).map((w) => w[0]).slice(0, 2
 export const groupOf = (pos) => (pos === 'GK' ? 'GK' : ['CB', 'LB', 'RB'].includes(pos) ? 'DEF' : ['CDM', 'CM', 'CAM', 'LM', 'RM'].includes(pos) ? 'MID' : 'ATT');
 export const GROUP_COLOR = { GK: '#ffb020', DEF: '#4d8dff', MID: '#2ee59d', ATT: '#ff5470' };
 
-/* Transfer-announcement silhouette in club colours, or the player's photo if one was dropped into public/photos. */
+/* Local headshots share one frame across cards, pitch tokens and signing lists. */
 export function Portrait({ f }) {
   usePhotos();
-  const [broken, setBroken] = useState(false);
+  const [failedSrc, setFailedSrc] = useState(null);
   const src = !f.academy && photoUrl(f.id);
-  if (src && !broken) return <img className="portrait-img" src={src} alt="" loading="lazy" onError={() => setBroken(true)} />;
+  if (src && src !== failedSrc) return (
+    <span className="portrait-photo" style={{ '--portrait-hue': clubHue(f.club) }}>
+      <img key={src} className="portrait-img" src={src} alt="" loading="lazy" decoding="async" draggable={false} onError={() => setFailedSrc(src)} />
+    </span>
+  );
   const h = clubHue(f.club), gid = `g${f.id}`;
   return (
     <svg className="portrait" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
