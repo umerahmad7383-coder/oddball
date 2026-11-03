@@ -2,7 +2,7 @@
  * so nothing broken or empty ever shows on the site. See README → "Making money". */
 export const SITE = {
   name: 'oddball',
-  tagline: 'Strange little games. Most of them better with friends.',
+  tagline: 'Strange little games. Pick one.',
   contactEmail: '',            // e.g. 'hello@oddball.fun' → shows "Advertise / Sponsor a game" (top-left)
 };
 
@@ -32,7 +32,8 @@ export const BUILT_WITH = [
 
 /* Dev log shown in the side panel, newest first. */
 export const DEV_LOG = [
-  { date: '2 Nov 2026', text: 'Two new games: Tiny Nation (build a country in 10 turns) and The Perfectly Normal Form (good luck).' },
+  { date: '3 Nov 2026', text: 'Cleaned up the home page. Fewer boxes, more games.' },
+  { date: '2 Nov 2026', text: 'Two new games: Tiny Nation and The Perfectly Normal Form (good luck).' },
   { date: '2 Nov 2026', text: 'Deadline Day: new TV-studio look, auto-bidding, “where he’d play” previews, drag-and-drop XI, smarter lots, summer 2026 transfers.' },
   { date: '1 Nov 2026', text: 'Deadline Day launched: live football transfer auctions for 2–8 managers.' },
   { date: '1 Nov 2026', text: 'oddball opened with Anti-Scam Arcade.' },

@@ -2,8 +2,8 @@
  * Themes restyle the home page; cursor trails follow the pointer on every page that calls initCosmetics(). */
 const KEY = 'oddball.cosmetics';
 export const THEMES = {
-  midnight: { name: 'Midnight', free: true, swatch: ['#0f0c1a', '#ff5a36', '#ffd400'] },
-  paper: { name: 'Paper', free: true, swatch: ['#f4f5fa', '#15131a', '#ff5a36'] },
+  paper: { name: 'Plain', free: true, swatch: ['#ffffff', '#141414', '#ff4d2e'] },
+  midnight: { name: 'Night', free: true, swatch: ['#121014', '#f3f1ee', '#ff4d2e'] },
   cyberpunk: { name: 'Cyberpunk', swatch: ['#0a0014', '#ff2bd6', '#00fff0'] },
   terminal: { name: 'Retro Terminal', swatch: ['#000', '#33ff66', '#1a7a33'] },
   oled: { name: 'True OLED Black', swatch: ['#000', '#fff', '#333'] },
@@ -16,8 +16,8 @@ export const TRAILS = {
 };
 
 export function getCosmetics() {
-  try { return { theme: 'midnight', trail: 'none', supporter: false, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; }
-  catch (e) { return { theme: 'midnight', trail: 'none', supporter: false }; }
+  try { return { theme: 'paper', trail: 'none', supporter: false, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; }
+  catch (e) { return { theme: 'paper', trail: 'none', supporter: false }; }
 }
 export function setCosmetics(patch) {
   const next = { ...getCosmetics(), ...patch };
@@ -43,7 +43,7 @@ export async function redeem(code, hashes) {
 }
 
 function apply(c) {
-  document.documentElement.dataset.theme = canUse(c, 'theme', c.theme) ? c.theme : 'midnight';
+  document.documentElement.dataset.theme = canUse(c, 'theme', c.theme) ? c.theme : 'paper';
   trail.mode = canUse(c, 'trail', c.trail) ? c.trail : 'none';
 }
 

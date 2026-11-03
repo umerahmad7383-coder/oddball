@@ -51,7 +51,7 @@ export function Landing({ r }) {
           <span className="breaking-chip big">BREAKING</span>
           <h1 className="dd-title"><span>DEADLINE</span><span>DAY</span></h1>
           <DeadlineClock />
-          <p className="land-sub">The window slams shut at 23:00. You’ve got {fmtM(BUDGET)}. Outbid your mates for the best XI.</p>
+          <p className="land-sub">{fmtM(BUDGET)} each. Real footballers. The window shuts at 23:00.</p>
         </div>
         <div className="hero-cards" aria-hidden="true">
           {SHOWCASE.map((id, i) => BY_ID[id] && <div key={id} className={`hc hc${i}`}><PlayerCard f={BY_ID[id]} size="md" /></div>)}
@@ -73,11 +73,7 @@ export function Landing({ r }) {
         {r.error && <p className="err">{r.error}</p>}
         {!ok && <p className="dim flex items-center gap-2"><Loader2 size={14} className="spin" /> {r.conn === 'reconnecting' ? 'Can’t reach the server, retrying…' : 'Connecting…'}</p>}
       </section>
-      <ol className="how">
-        <li><b>1</b><div><strong>Bid live</strong><span>Real footballers go under the hammer. 20 seconds a lot, and late bids add time. Set an auto-bid limit if you’re busy plotting.</span></div></li>
-        <li><b>2</b><div><strong>Build your XI</strong><span>Every signing drops onto your pitch. Clubmates, compatriots and league-mates link up for chemistry.</span></div></li>
-        <li><b>3</b><div><strong>Best squad wins</strong><span>85% average rating, 15% chemistry. Out-of-position players lose rating, so plan ahead.</span></div></li>
-      </ol>
+      <p className="land-foot">Live bids, 20 seconds a player. Then you pick your XI and the best squad wins.</p>
       {photos.credits && <button className="link-btn" onClick={() => setCredits(true)}><Camera size={14} /> Photo credits</button>}
       {credits && <Credits onClose={() => setCredits(false)} />}
     </div>

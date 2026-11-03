@@ -96,13 +96,13 @@ export default function App() {
           <div className="start-card">
             <p className="kicker">Congratulations. You own an island.</p>
             <h1>Build a tiny nation in ten years.</h1>
-            <p>Each year you fund one project and answer one question from your citizens. At the end you find out what kind of country you made.</p>
+            <p>Ten years. One project a year. Your citizens will have questions.</p>
             <label className="nm"><span>Name your nation</span>
               <div className="nm-row"><input value={name} maxLength={18} onChange={(e) => setName(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') found(); }} /><button className="icon-b" aria-label="Random name" onClick={() => setName(randomName())}><Dice5 size={20} /></button></div>
             </label>
             <div className="flag-row"><Flag f={flag} w={96} /><button className="ghost-b" onClick={() => setSeed(Math.floor(Math.random() * 2 ** 31))}><RefreshCw size={16} /> New flag</button></div>
             <button className="big-b" onClick={found}>Found {name.trim() || 'the nation'}</button>
-            <small>A toy, not a policy simulator. Geese are, however, accurately modelled.</small>
+            <small>Not a real economics model. The geese are accurate though.</small>
           </div>
         </main>
       </div>
@@ -125,7 +125,7 @@ export default function App() {
             <div className="panel">
               <p className="kicker">Year {year} of {TURNS}</p>
               <h2>What should {s.name} build this year?</h2>
-              <p className="sub">You have <b>£{Math.round(s.money)}k</b>. Taxes and income arrive at the end of the year.</p>
+              <p className="sub">You have <b>£{Math.round(s.money)}k</b>. Taxes come in at the end of the year.</p>
               <div className="cards">
                 {offers(s).map((k) => {
                   const p = PROJECTS[k], can = s.money >= p.cost;
