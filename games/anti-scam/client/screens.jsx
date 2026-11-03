@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { GAME_LEN, sum, fmtMoney, fmtTime } from './game/core.js';
 import { Icon, Pixel } from './game/ui.jsx';
+import { GameSponsorNote } from '../../../platform/client/promo.jsx';
 
 /* ================= Tutorial ================= */
 export const TUT_SCAMS = [
@@ -129,6 +130,7 @@ export function Menu({ store, name, setName, onSolo, onChallenge, onOnline, onTu
           </div>
         </div>
       </div>
+      <GameSponsorNote game="anti-scam" style={{ color: 'var(--scr-muted)' }} />
     </Screen>
   );
 }

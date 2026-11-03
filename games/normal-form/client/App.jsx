@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowLeft, Check, X, RotateCcw, Copy, Stamp } from 'lucide-react';
 import { buildRules, evaluateRules, revealedCount, emptyForm, makeVariant, HEARD, WEEKDAYS } from '../logic/rules.js';
+import { GameSponsorNote } from '../../../platform/client/promo.jsx';
+import { recordPlay } from '../../../platform/client/api.js';
 
 const BEST_KEY = 'oddball.form.best';
 const IDLE = ['Take your time. We close at five.', 'Please write clearly. Or don’t. Nobody reads these.', 'This form has been perfectly normal since 1974.', 'Gerald, Admin. Here to help, technically.'];
@@ -68,6 +70,7 @@ export default function App() {
     const isBest = !best || ms < best;
     if (isBest) { try { localStorage.setItem(BEST_KEY, String(ms)); } catch (err) { /* ignore */ } }
     setDone({ ms, best: isBest ? ms : best, isBest, ref: `NF-${Math.floor(100000 + Math.random() * 899999)}` });
+    recordPlay('normal-form', { score: Math.round(ms / 1000), won: true, meta: { rulesBroken: breaks } });
     beep(523, 0.1); setTimeout(() => beep(784, 0.2), 120);
   };
   const restart = () => {
@@ -134,6 +137,7 @@ export default function App() {
         </aside>
       </main>
 
+      <GameSponsorNote game="normal-form" style={{ color: '#eef3ea', paddingBottom: 24 }} />
       {done && (
         <div className="done" role="dialog" aria-label="Form accepted">
           <div className="done-card">

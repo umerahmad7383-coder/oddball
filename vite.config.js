@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 
 // Every game is its own page so its code and styles never leak into another game.
 // Add a game: create <slug>/index.html and list it here.
-const pages = { hub: 'index.html', 'anti-scam': 'anti-scam/index.html', 'deadline-day': 'deadline-day/index.html', 'normal-form': 'normal-form/index.html', 'tiny-nation': 'tiny-nation/index.html' };
+const pages = { hub: 'index.html', 'anti-scam': 'anti-scam/index.html', 'deadline-day': 'deadline-day/index.html', 'normal-form': 'normal-form/index.html', 'tiny-nation': 'tiny-nation/index.html', site: 'site/index.html' };
 
 export default defineConfig({
   plugins: [react()],

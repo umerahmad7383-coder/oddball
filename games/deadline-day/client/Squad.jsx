@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { recordPlay } from '../../../platform/client/api.js';
 import { Wand2, Lock, Unlock, Timer, Trophy, RotateCcw, LogOut, Check, ChevronDown, Home } from 'lucide-react';
 import { fmtM } from '../shared/rules.js';
 import { FORMATIONS, formationsFor, evaluate, arrange, fit } from '../shared/tactics.js';
@@ -118,6 +119,13 @@ export function Results({ r, lookup }) {
   const winner = rows[0];
   const votes = room.players.filter((p) => p.rematch && p.connected).length;
   const aw = awards(rows, st, lookup);
+  const recorded = useRef(false);
+  useEffect(() => {
+    const mine = rows.find((x) => x.pid === me.id);
+    if (!mine || recorded.current) return;
+    recorded.current = true;
+    recordPlay('deadline-day', { score: mine.final, won: mine.rank === 1, meta: { rank: mine.rank, managers: rows.length, mode: st.mode } });
+  }, [rows.length]);
   return (
     <div className="results">
       {winner && winner.pid === me.id && <Confetti />}

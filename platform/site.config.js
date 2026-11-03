@@ -1,24 +1,11 @@
-/* oddball site settings. Everything money-related is OFF until you fill it in,
- * so nothing broken or empty ever shows on the site. See README → "Making money". */
+/* oddball site settings that rarely change. Everything money-related is managed at /admin. */
 export const SITE = {
   name: 'oddball',
   tagline: 'Strange little games. Pick one.',
   contactEmail: '',            // e.g. 'hello@oddball.fun' → shows "Advertise / Sponsor a game" (top-left)
 };
 
-export const MONEY = {
-  // Ko-fi: tips + the "server costs" goal bar in the footer, and where shop items are bought.
-  kofiUrl: '',                 // e.g. 'https://ko-fi.com/oddball'
-  tipGoal: { label: 'Server costs this month', raised: 0, goal: 50, currency: '$' }, // update raised by hand
-  // Carbon Ads (apply at carbonads.net). Paste the two IDs from your Carbon embed code.
-  carbon: { serve: '', placement: '' },
-  // Patreon page for the locked "Sandbox" tile.
-  patreonUrl: '',
-  // Optional store for asset packs / source bundles.
-  assetStoreUrl: '',
-  // Shop unlock codes, stored as SHA-256 hashes. Make one with: npm run make-code -- YOURCODE
-  supporterCodeHashes: [],
-};
+/* Money settings (ads, Ko-fi, memberships) now live in the admin dashboard at /admin. */
 
 /* "Built with…" panel. Mark affiliate links honestly (the site labels them for you). */
 export const BUILT_WITH = [

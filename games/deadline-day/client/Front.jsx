@@ -4,6 +4,7 @@ import { inviteLink, readJoinCode } from '../../../platform/client/useRoom.js';
 import { MODES, BUDGET, MAX_PLAYERS, MIN_PLAYERS, fmtM } from '../shared/rules.js';
 import { PlayerCard, Sound, usePhotos } from './ui.jsx';
 import { BY_ID } from '../shared/players.js';
+import { GameSponsorNote } from '../../../platform/client/promo.jsx';
 
 const NAME_KEY = 'oddball.name';
 export const savedName = () => { try { return localStorage.getItem(NAME_KEY) || ''; } catch (e) { return ''; } };
@@ -74,6 +75,7 @@ export function Landing({ r }) {
         {!ok && <p className="dim flex items-center gap-2"><Loader2 size={14} className="spin" /> {r.conn === 'reconnecting' ? 'Can’t reach the server, retrying…' : 'Connecting…'}</p>}
       </section>
       <p className="land-foot">Live bids, 20 seconds a player. Then you pick your XI and the best squad wins.</p>
+      <GameSponsorNote game="deadline-day" style={{ color: '#96a0c9' }} />
       {photos.credits && <button className="link-btn" onClick={() => setCredits(true)}><Camera size={14} /> Photo credits</button>}
       {credits && <Credits onClose={() => setCredits(false)} />}
     </div>

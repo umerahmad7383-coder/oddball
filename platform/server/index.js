@@ -7,6 +7,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { GAME_SERVERS, PAGES } from './registry.js';
+import { initDb } from './db.js';
+import { seed } from './seed.js';
+import { buildApi, handleApi } from './api.js';
+
+/* Account, support, vault and admin pages are one small app (dist/site). */
+const SITE_ROUTES = ['support', 'vault', 'me', 'supporters', 'advertise', 'admin', 'privacy', 'login', 'notes', 'newsletter', 'u'];
+let api = null;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.resolve(__dirname, '..', '..', 'dist');
@@ -24,6 +31,10 @@ function sendFile(res, file, status = 200) {
 const server = http.createServer((req, res) => {
   let url;
   try { url = new URL(req.url, 'http://localhost'); } catch { res.writeHead(400); res.end(); return; }
+  if (url.pathname.startsWith('/api/')) {
+    if (!api) { res.writeHead(503, { 'content-type': 'application/json' }); res.end('{"error":"Starting up, try again in a moment."}'); return; }
+    handleApi(api, req, res, url); return;
+  }
   if (url.pathname === '/healthz') {
     res.writeHead(200, { 'content-type': 'application/json' });
     res.end(JSON.stringify({ ok: true, games: Object.fromEntries(Object.entries(GAME_SERVERS).map(([id, g]) => [id, g.stats()])) }));
@@ -43,6 +54,7 @@ const server = http.createServer((req, res) => {
       if (!err2 && st2.isFile()) { sendFile(res, file); return; }
       // unknown path inside a game -> that game's page; anything else -> the hub
       if (PAGES.includes(top)) sendFile(res, path.join(DIST, top, 'index.html'));
+      else if (SITE_ROUTES.includes(top)) sendFile(res, path.join(DIST, 'site', 'index.html'));
       else sendFile(res, path.join(DIST, 'index.html'), rel === '/' ? 200 : 404);
     });
   });
@@ -57,6 +69,11 @@ server.on('upgrade', (req, socket, head) => {
   game.wss.handleUpgrade(req, socket, head, (ws) => game.wss.emit('connection', ws, req));
 });
 
+async function start() {
+  try { await initDb(); await seed(); api = buildApi(); }
+  catch (e) { console.error('database failed to start:', e); }
+}
+start();
 server.listen(PORT, () => {
   console.log(`oddball running on http://localhost:${PORT}`);
   console.log(`  games: ${Object.keys(GAME_SERVERS).map((id) => `/ws/${id}`).join(', ')}`);

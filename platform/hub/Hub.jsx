@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { X, Lock, Check, Coffee, Heart, ExternalLink, Sparkles } from 'lucide-react';
+import { X, ExternalLink, Coffee } from 'lucide-react';
 import { SITE, GAMES } from '../games.js';
-import { MONEY, BUILT_WITH, DEV_LOG } from '../site.config.js';
-import { THEMES, TRAILS, getCosmetics, setCosmetics, canUse, redeem } from '../client/cosmetics.js';
+import { BUILT_WITH, DEV_LOG } from '../site.config.js';
+import { usePromo, useImpression, FooterAd, SponsorLine, linkProps, deviceClass } from '../client/promo.jsx';
+import { track, previewMode } from '../client/api.js';
+import { BadgeIcon } from '../site/profile.jsx';
 
 function Ball({ className = '' }) {
   return (
@@ -62,10 +64,9 @@ function AntiScamArt() {
     </div>
   );
 }
-function SandboxArt() { return <div className="obj obj-sandbox" aria-hidden="true"><Lock size={40} /><span>work in progress</span></div>; }
-const ART = { deadline: DeadlineArt, form: FormArt, nation: NationArt, antiscam: AntiScamArt, sandbox: SandboxArt };
+const ART = { deadline: DeadlineArt, form: FormArt, nation: NationArt, antiscam: AntiScamArt };
 
-function Game({ g, onClick }) {
+function Game({ g }) {
   const Art = ART[g.art];
   const inner = (
     <>
@@ -75,7 +76,7 @@ function Game({ g, onClick }) {
       <small>{g.players}</small>
     </>
   );
-  return <li className={`game g-${g.slug}`}>{onClick ? <button onClick={onClick}>{inner}</button> : <a href={g.href}>{inner}</a>}</li>;
+  return <li className={`game g-${g.slug}`}><a href={g.href}>{inner}</a></li>;
 }
 
 function useLiveCount() {
@@ -101,45 +102,6 @@ function Modal({ title, onClose, children, wide }) {
   );
 }
 
-function Shop({ onClose }) {
-  const [c, setC] = useState(getCosmetics());
-  const [code, setCode] = useState(''), [msg, setMsg] = useState('');
-  useEffect(() => { const f = (e) => setC(e.detail); window.addEventListener('oddball-cosmetics', f); return () => window.removeEventListener('oddball-cosmetics', f); }, []);
-  const tryCode = async () => { const ok = await redeem(code, MONEY.supporterCodeHashes); setMsg(ok ? 'Unlocked. Thank you!' : 'That code didn’t work.'); };
-  const Item = ({ kind, id, def }) => {
-    const usable = canUse(c, kind, id), active = (kind === 'theme' ? c.theme : c.trail) === id;
-    return (
-      <button className={`shop-item ${active ? 'on' : ''}`} disabled={!usable} onClick={() => setCosmetics(kind === 'theme' ? { theme: id } : { trail: id })}>
-        {def.swatch ? <span className="swatch">{def.swatch.map((s) => <i key={s} style={{ background: s }} />)}</span> : <span className={`trail-ico t-${id}`} />}
-        <b>{def.name}</b>
-        <small>{active ? <><Check size={13} /> on</> : usable ? (def.free ? 'free' : 'yours') : <><Lock size={12} /> supporters</>}</small>
-      </button>
-    );
-  };
-  return (
-    <Modal title="Shop" onClose={onClose} wide>
-      <p className="muted">Looks only. Nothing here helps you win anything.</p>
-      <h4>Themes</h4>
-      <div className="shop-grid">{Object.entries(THEMES).map(([id, def]) => <Item key={id} kind="theme" id={id} def={def} />)}</div>
-      <h4>Cursor trails</h4>
-      <div className="shop-grid">{Object.entries(TRAILS).map(([id, def]) => <Item key={id} kind="trail" id={id} def={def} />)}</div>
-      {!c.supporter && (
-        <div className="shop-unlock">
-          <b>Supporter pack: every theme and trail, on this browser.</b>
-          {MONEY.kofiUrl && <a className="btn" href={MONEY.kofiUrl} target="_blank" rel="noreferrer"><Coffee size={16} /> Get a code on Ko-fi</a>}
-          {MONEY.supporterCodeHashes.length > 0 ? (
-            <div className="code-row">
-              <input value={code} onChange={(e) => setCode(e.target.value)} placeholder="Supporter code" aria-label="Supporter code" onKeyDown={(e) => { if (e.key === 'Enter') tryCode(); }} />
-              <button className="btn" onClick={tryCode}>Unlock</button>
-            </div>
-          ) : <p className="muted small">Not on sale yet.</p>}
-          {msg && <p className="muted small" role="status">{msg}</p>}
-        </div>
-      )}
-    </Modal>
-  );
-}
-
 function DevPanel({ open, onClose, focusBuilt }) {
   // `inert` keeps the closed panel out of the tab order and away from screen readers
   return (
@@ -150,45 +112,67 @@ function DevPanel({ open, onClose, focusBuilt }) {
         <h4>Built with</h4>
         <ul className="built">{BUILT_WITH.map((b) => <li key={b.name}><a href={b.url} target="_blank" rel={b.affiliate ? 'sponsored noreferrer' : 'noreferrer'}>{b.name} <ExternalLink size={12} /></a><span>{b.what}{b.affiliate ? ' (affiliate link)' : ''}</span></li>)}</ul>
       </section>
-      {(MONEY.kofiUrl || MONEY.patreonUrl || MONEY.assetStoreUrl) && (
-        <section>
-          <h4>Help keep it running</h4>
-          <div className="dp-links">
-            {MONEY.kofiUrl && <a className="btn" href={MONEY.kofiUrl} target="_blank" rel="noreferrer"><Coffee size={16} /> Ko-fi</a>}
-            {MONEY.patreonUrl && <a className="btn" href={MONEY.patreonUrl} target="_blank" rel="noreferrer"><Heart size={16} /> Patreon</a>}
-            {MONEY.assetStoreUrl && <a className="btn" href={MONEY.assetStoreUrl} target="_blank" rel="noreferrer"><Sparkles size={16} /> Asset packs</a>}
-          </div>
-        </section>
-      )}
+      <section><h4>Support</h4><p className="muted">oddball is free. If you’d like to help, <a className="link" href="/support">here’s how</a>.</p></section>
     </aside>
   );
 }
 
-function CarbonAd() {
-  const ref = React.useRef(null);
-  useEffect(() => {
-    const { serve, placement } = MONEY.carbon; if (!serve || !placement || !ref.current) return;
-    const s = document.createElement('script');
-    s.async = true; s.id = '_carbonads_js'; s.src = `https://cdn.carbonads.com/carbon.js?serve=${encodeURIComponent(serve)}&placement=${encodeURIComponent(placement)}`;
-    ref.current.appendChild(s);
-  }, []);
-  if (!MONEY.carbon.serve) return null;
-  return <div className="carbon" ref={ref} />;
+/* A sponsored game: same shape as the others, always labelled. */
+function SponsoredGame({ item, preview }) {
+  const ref = useImpression(item, preview);
+  return (
+    <li className={`game sponsored ${deviceClass(item)}`} ref={ref}>
+      <a {...linkProps(item)}>
+        <div className="obj obj-sponsored">{item.image ? <img src={item.image} alt="" loading="lazy" /> : <span>{item.title}</span>}</div>
+        <h2>{item.title}<span className="ob-tag">{item.label || 'Sponsored'}</span></h2>
+        <p>{item.body}</p>
+        <small>A paid placement, not an oddball game.</small>
+      </a>
+    </li>
+  );
+}
+function GameOfWeek({ item, preview }) {
+  const ref = useImpression(item, preview);
+  const g = GAMES.find((x) => x.slug === item.game);
+  if (!g) return null;
+  const Art = ART[g.art];
+  const href = item.href && item.sponsored ? item.href : g.href;
+  return (
+    <a className={`gotw ${deviceClass(item)}`} href={href} ref={ref} {...(item.href && item.sponsored ? { target: '_blank', rel: 'sponsored noopener noreferrer' } : {})}>
+      <div className="gotw-art">{item.image ? <img src={item.image} alt="" /> : Art ? <Art /> : null}</div>
+      <div className="gotw-text">
+        <span className="gotw-kicker">{item.label || 'Game of the week'}{item.sponsored && item.sponsor ? ` · sponsored by ${item.sponsor}` : item.sponsored ? ' · sponsored' : ''}</span>
+        <b>{g.title}</b>
+        <span>{item.body || g.blurb}</span>
+      </div>
+    </a>
+  );
+}
+function useMe() {
+  const [me, setMe] = useState(null);
+  useEffect(() => { fetch('/api/me', { credentials: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).then((j) => setMe(j && j.user ? j : null)).catch(() => {}); }, []);
+  return me;
 }
 
 export function Hub() {
-  const [shop, setShop] = useState(false), [panel, setPanel] = useState(false), [sandbox, setSandbox] = useState(false), [built, setBuilt] = useState(false);
+  const [panel, setPanel] = useState(false), [built, setBuilt] = useState(false);
   const live = useLiveCount();
-  const goal = MONEY.tipGoal, pct = Math.min(100, Math.round((goal.raised / Math.max(1, goal.goal)) * 100));
+  const me = useMe();
+  const { items, preview } = usePromo('home');
+  useEffect(() => { track('home'); }, []);
+  const pick = (pl) => items.filter((i) => i.placement === pl);
+  const sponsor = pick('home_sponsor')[0], footer = pick('footer')[0], gotw = pick('gotw')[0], cards = pick('sponsored_card');
   const random = () => { window.location.href = GAMES[Math.floor(Math.random() * GAMES.length)].href; };
+  const card = me && me.profile.card;
   return (
     <div className="page">
       <nav className="top" aria-label="Site">
-        {SITE.contactEmail ? <a href={`mailto:${SITE.contactEmail}?subject=Sponsoring%20a%20game%20on%20oddball`}>advertise</a> : <span />}
+        <span className="top-l">{live > 0 && <span className="live"><i />{live} playing</span>}</span>
         <span className="top-r">
-          {live > 0 && <span className="live"><i />{live} playing</span>}
-          <button onClick={() => setShop(true)}>shop</button>
+          <a href="/support">support</a>
+          <a href="/vault">vault</a>
           <button onClick={() => setPanel((p) => !p)} aria-expanded={panel}>dev log</button>
+          {card ? <a href="/me" className="me-chip" style={{ '--acc': card.accent || 'var(--ink)' }}>{card.badge && <BadgeIcon badge={card.badge} size={15} />}{card.username}</a> : <a href="/login">sign in</a>}
         </span>
       </nav>
 
@@ -196,36 +180,28 @@ export function Hub() {
         <header className="intro">
           <h1 className="wordmark" aria-label={SITE.name}><Ball className="wm-ball" /><span>ddball</span></h1>
           <p>{SITE.tagline} <button className="rand" onClick={random}>Or let fate decide.</button></p>
+          <SponsorLine item={sponsor} preview={preview} />
         </header>
+        {gotw && <GameOfWeek item={gotw} preview={preview} />}
         <ul className="games">
           {GAMES.map((g) => <Game key={g.slug} g={g} />)}
-          {MONEY.patreonUrl && <Game g={{ slug: 'sandbox', title: 'The Sandbox', blurb: 'Half-finished experiments, for Patreon supporters.', players: 'Supporters', art: 'sandbox' }} onClick={() => setSandbox(true)} />}
+          {cards.map((c) => <SponsoredGame key={c.id} item={c} preview={preview} />)}
         </ul>
       </main>
 
       <footer className="foot">
-        <div className="foot-l"><CarbonAd /></div>
-        <div className="foot-c"><span>{SITE.name}</span><button onClick={() => { setPanel(true); setBuilt(true); setTimeout(() => setBuilt(false), 1600); }}>built with…</button></div>
-        <div className="foot-r">
-          {MONEY.kofiUrl && (
-            <a className="goal" href={MONEY.kofiUrl} target="_blank" rel="noreferrer">
-              <span>{goal.label}: {goal.currency}{goal.raised} of {goal.currency}{goal.goal}</span>
-              <span className="goal-bar"><i style={{ width: `${pct}%` }} /></span>
-            </a>
-          )}
+        <div className="foot-l"><FooterAd item={footer} preview={preview} /></div>
+        <div className="foot-c">
+          <span>{SITE.name}</span>
+          <a href="/supporters">supporters</a>
+          <a href="/advertise">advertise with oddball</a>
+          <a href="/privacy">privacy</a>
+          <button onClick={() => { setPanel(true); setBuilt(true); setTimeout(() => setBuilt(false), 1600); }}>built with…</button>
         </div>
+        <div className="foot-r"><a className="coffee" href="/support#coffee"><Coffee size={16} /> Enjoying oddball? Buy us a coffee.</a></div>
       </footer>
 
       <DevPanel open={panel} onClose={() => setPanel(false)} focusBuilt={built} />
-      {shop && <Shop onClose={() => setShop(false)} />}
-      {sandbox && (
-        <Modal title="The Sandbox" onClose={() => setSandbox(false)}>
-          <div className="sandbox-lock"><Lock size={36} /><p>Experiments that aren’t ready yet. Patreon supporters get the link.</p>
-            <a className="btn" href={MONEY.patreonUrl} target="_blank" rel="noreferrer"><Heart size={16} /> Patreon</a>
-            {MONEY.assetStoreUrl && <a className="link" href={MONEY.assetStoreUrl} target="_blank" rel="noreferrer">Art and sound packs</a>}
-          </div>
-        </Modal>
-      )}
     </div>
   );
 }

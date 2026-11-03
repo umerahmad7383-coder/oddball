@@ -1,54 +1,9 @@
-/* oddball cosmetics: purely visual, never pay-to-win.
- * Themes restyle the home page; cursor trails follow the pointer on every page that calls initCosmetics(). */
-const KEY = 'oddball.cosmetics';
-export const THEMES = {
-  paper: { name: 'Plain', free: true, swatch: ['#ffffff', '#141414', '#ff4d2e'] },
-  midnight: { name: 'Night', free: true, swatch: ['#121014', '#f3f1ee', '#ff4d2e'] },
-  cyberpunk: { name: 'Cyberpunk', swatch: ['#0a0014', '#ff2bd6', '#00fff0'] },
-  terminal: { name: 'Retro Terminal', swatch: ['#000', '#33ff66', '#1a7a33'] },
-  oled: { name: 'True OLED Black', swatch: ['#000', '#fff', '#333'] },
-};
-export const TRAILS = {
-  none: { name: 'No trail', free: true },
-  sparkle: { name: 'Sparkles' },
-  comet: { name: 'Comet' },
-  confetti: { name: 'Confetti' },
-};
+/* oddball cosmetics: looks only, never gameplay.
+ * What you can use is decided by the server (/api/me). Visitors get the default look.
+ * Admin previews can force a theme with ?theme=… */
+export const THEME_IDS = ['paper', 'midnight', 'terminal', 'retro', 'notebook', 'neon', 'mono', 'gold'];
 
-export function getCosmetics() {
-  try { return { theme: 'paper', trail: 'none', supporter: false, ...JSON.parse(localStorage.getItem(KEY) || '{}') }; }
-  catch (e) { return { theme: 'paper', trail: 'none', supporter: false }; }
-}
-export function setCosmetics(patch) {
-  const next = { ...getCosmetics(), ...patch };
-  try { localStorage.setItem(KEY, JSON.stringify(next)); } catch (e) { /* ignore */ }
-  apply(next);
-  window.dispatchEvent(new CustomEvent('oddball-cosmetics', { detail: next }));
-  return next;
-}
-export const canUse = (c, kind, id) => (kind === 'theme' ? THEMES : TRAILS)[id]?.free || c.supporter;
-
-async function sha256(text) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-/** Check a supporter code against the hashes in site.config.js. */
-export async function redeem(code, hashes) {
-  const clean = String(code || '').trim().toUpperCase();
-  if (!clean || !hashes || !hashes.length || !window.crypto?.subtle) return false;
-  const h = await sha256(clean);
-  if (!hashes.includes(h)) return false;
-  setCosmetics({ supporter: true });
-  return true;
-}
-
-function apply(c) {
-  document.documentElement.dataset.theme = canUse(c, 'theme', c.theme) ? c.theme : 'paper';
-  trail.mode = canUse(c, 'trail', c.trail) ? c.trail : 'none';
-}
-
-/* ---------- cursor trail (canvas overlay, ignores clicks) ---------- */
-const trail = { mode: 'none', canvas: null, ctx: null, parts: [], raf: 0, last: null };
+const trail = { mode: 'none', canvas: null, ctx: null, parts: [], raf: 0 };
 function frame() {
   const { ctx, canvas, parts } = trail;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -57,28 +12,26 @@ function frame() {
     if (p.life <= 0) { parts.splice(i, 1); continue; }
     const a = p.life / p.max; ctx.globalAlpha = a; ctx.fillStyle = p.c;
     if (p.kind === 'star') { ctx.beginPath(); for (let k = 0; k < 5; k++) { const ang = (k * 4 * Math.PI) / 5 - Math.PI / 2, r = p.r * (0.6 + a * 0.4); ctx.lineTo(p.x + Math.cos(ang) * r, p.y + Math.sin(ang) * r); } ctx.fill(); }
-    else if (p.kind === 'rect') { ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot += 0.2); ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); ctx.restore(); }
-    else { ctx.beginPath(); ctx.arc(p.x, p.y, p.r * a, 0, Math.PI * 2); ctx.fill(); }
+    else if (p.kind === 'rect') { ctx.save(); ctx.translate(p.x, p.y); ctx.rotate((p.rot += 0.2)); ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r); ctx.restore(); }
+    else { ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (p.kind === 'snow' ? 1 : a), 0, Math.PI * 2); ctx.fill(); }
   }
   ctx.globalAlpha = 1;
   trail.raf = parts.length ? requestAnimationFrame(frame) : 0;
 }
 function emit(x, y) {
-  const m = trail.mode; if (m === 'none') return;
-  const n = m === 'comet' ? 2 : 1;
-  for (let i = 0; i < n; i++) {
-    if (m === 'sparkle') trail.parts.push({ kind: 'star', x, y, vx: (Math.random() - 0.5) * 1.5, vy: (Math.random() - 0.5) * 1.5, g: 0.02, r: 4 + Math.random() * 3, life: 30, max: 30, c: ['#ffd400', '#fff', '#ff9bf0'][Math.floor(Math.random() * 3)] });
-    if (m === 'comet') trail.parts.push({ kind: 'dot', x, y, vx: 0, vy: 0, g: 0, r: 7, life: 22, max: 22, c: `hsl(${(Date.now() / 6) % 360} 95% 65%)` });
-    if (m === 'confetti') trail.parts.push({ kind: 'rect', x, y, vx: (Math.random() - 0.5) * 3, vy: -1 - Math.random() * 2, g: 0.15, r: 4, rot: Math.random() * 6, life: 45, max: 45, c: ['#ff5a36', '#2f6bff', '#16a34a', '#ffd400', '#d946ef'][Math.floor(Math.random() * 5)] });
-  }
+  const m = trail.mode; if (m === 'none' || !trail.ctx) return;
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  if (m === 'sparkle') trail.parts.push({ kind: 'star', x, y, vx: (Math.random() - 0.5) * 1.5, vy: (Math.random() - 0.5) * 1.5, g: 0.02, r: 4 + Math.random() * 3, life: 30, max: 30, c: pick(['#ffd400', '#fff', '#ff9bf0']) });
+  if (m === 'comet') for (let i = 0; i < 2; i++) trail.parts.push({ kind: 'dot', x, y, vx: 0, vy: 0, g: 0, r: 7, life: 22, max: 22, c: `hsl(${(Date.now() / 6) % 360} 95% 65%)` });
+  if (m === 'confetti') trail.parts.push({ kind: 'rect', x, y, vx: (Math.random() - 0.5) * 3, vy: -1 - Math.random() * 2, g: 0.15, r: 4, rot: Math.random() * 6, life: 45, max: 45, c: pick(['#ff5a36', '#2f6bff', '#16a34a', '#ffd400', '#d946ef']) });
+  if (m === 'snow') trail.parts.push({ kind: 'snow', x: x + (Math.random() - 0.5) * 20, y, vx: (Math.random() - 0.5) * 0.6, vy: 0.6 + Math.random(), g: 0, r: 2 + Math.random() * 2, life: 60, max: 60, c: '#dbeafe' });
   if (trail.parts.length > 220) trail.parts.splice(0, trail.parts.length - 220);
   if (!trail.raf) trail.raf = requestAnimationFrame(frame);
 }
 let started = false;
-export function initCosmetics() {
-  apply(getCosmetics());
-  if (started) return; started = true;
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+function startTrailCanvas() {
+  if (started || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  started = true;
   const c = document.createElement('canvas');
   c.setAttribute('aria-hidden', 'true');
   Object.assign(c.style, { position: 'fixed', inset: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: '2147483000' });
@@ -87,5 +40,24 @@ export function initCosmetics() {
   size(); window.addEventListener('resize', size);
   trail.canvas = c; trail.ctx = c.getContext('2d');
   window.addEventListener('pointermove', (e) => { if (e.pointerType !== 'touch') emit(e.clientX, e.clientY); }, { passive: true });
-  window.addEventListener('storage', (e) => { if (e.key === KEY) apply(getCosmetics()); });
+}
+
+/** Apply a theme/trail the server says this user may use. */
+export function applyCosmetics({ theme, trail: t } = {}, { themes = true } = {}) {
+  const forced = new URLSearchParams(window.location.search).get('theme');
+  if (themes) document.documentElement.dataset.theme = THEME_IDS.includes(forced) ? forced : THEME_IDS.includes(theme) ? theme : 'paper';
+  trail.mode = ['sparkle', 'comet', 'confetti', 'snow'].includes(t) ? t : 'none';
+  if (trail.mode !== 'none') startTrailCanvas();
+}
+/** Fetch the signed-in user's equipped (server-validated) cosmetics. `themes: false` for games with their own look. */
+export async function initCosmetics({ themes = true } = {}) {
+  applyCosmetics({}, { themes });
+  try {
+    const r = await fetch('/api/me', { credentials: 'same-origin' });
+    if (!r.ok) return null;
+    const me = await r.json();
+    const eff = me && me.profile ? me.profile.effective : {};
+    applyCosmetics({ theme: eff.theme && eff.theme.data.theme, trail: eff.trail && eff.trail.data.trail }, { themes });
+    return me;
+  } catch (e) { return null; }
 }

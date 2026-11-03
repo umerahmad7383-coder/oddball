@@ -3,6 +3,7 @@ import { loadStore, saveStore, defaultStore, Sound, sum } from './game/core.js';
 import { Game } from './game/Game.jsx';
 import { Menu, Tutorial, Setup2P, Handoff, Result, MatchResult, Leaderboard, Screen } from './screens.jsx';
 import { OnlineHub } from './online/Online.jsx';
+import { recordPlay } from '../../../platform/client/api.js';
 
 const initialJoin = (() => { try { return (new URLSearchParams(window.location.search).get('join') || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } catch (e) { return ''; } })();
 
@@ -44,6 +45,7 @@ export default function App() {
   };
 
   const handleEnd = (result) => {
+    recordPlay('anti-scam', { score: result.score, won: result.won, meta: { mode: match ? 'duel' : 'solo' } });
     const s = storeRef.current, player = current ? current.player : 'Player';
     const entry = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: player, score: result.score, survival: Math.floor(result.survival), money: result.money, defeated: result.defeated, won: result.won, date: new Date().toISOString(), mode: match ? '2P' : 'Solo' };
     const lb = [...s.leaderboard, entry].sort((a, b) => b.score - a.score).slice(0, 10);
@@ -72,6 +74,7 @@ export default function App() {
 
   const toMenu = () => { setMatch(null); setScreen('menu'); };
   const recordOnline = (e) => {
+    recordPlay('anti-scam', { score: e.score, won: e.won, meta: { mode: e.mode } });
     const s = storeRef.current;
     const entry = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), date: new Date().toISOString(), ...e };
     const lb = [...s.leaderboard, entry].sort((a, b) => b.score - a.score).slice(0, 10);

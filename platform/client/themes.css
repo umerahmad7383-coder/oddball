@@ -1,0 +1,23 @@
+/* Site themes shared by the home page and the account pages. Games keep their own looks. */
+:root, :root[data-theme="paper"], [data-theme="paper"] { --bg: #ffffff; --ink: #141414; --muted: #6f6f6f; --line: #e6e6e6; --accent: #ff4d2e; --card: #ffffff; --soft: #f5f5f4; --font: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif; color-scheme: light; }
+:root[data-theme="midnight"], [data-theme="midnight"] { --bg: #121014; --ink: #f3f1ee; --muted: #9b968f; --line: #2b2830; --accent: #ff6a4d; --card: #1b181e; --soft: #1e1b22; color-scheme: dark; }
+:root[data-theme="terminal"], [data-theme="terminal"] { --bg: #000; --ink: #33ff66; --muted: #1fa344; --line: #0f5c24; --accent: #b6ff3b; --card: #020c04; --soft: #041608; --font: "Courier New", ui-monospace, monospace; color-scheme: dark; }
+:root[data-theme="retro"], [data-theme="retro"] { --bg: #efe6d2; --ink: #3b2a1a; --muted: #7a6650; --line: #d6c7a8; --accent: #c2410c; --card: #f7f0e0; --soft: #e6dbc2; color-scheme: light; }
+:root[data-theme="notebook"], [data-theme="notebook"] { --bg: #fdfdf8; --ink: #2b3a55; --muted: #6b7a93; --line: #d7e0ef; --accent: #e11d48; --card: #ffffff; --soft: #f1f5fb; color-scheme: light; }
+:root[data-theme="neon"], [data-theme="neon"] { --bg: #0a0014; --ink: #fdf0ff; --muted: #b48ccf; --line: #4a1a5e; --accent: #00fff0; --card: #14002a; --soft: #1a0533; color-scheme: dark; }
+:root[data-theme="mono"], [data-theme="mono"] { --bg: #000; --ink: #fff; --muted: #8a8a8a; --line: #262626; --accent: #fff; --card: #000; --soft: #0d0d0d; color-scheme: dark; }
+:root[data-theme="gold"], [data-theme="gold"] { --bg: #16120a; --ink: #f6e7c1; --muted: #b59e6a; --line: #3d321c; --accent: #e8b931; --card: #1f1a0f; --soft: #241d10; color-scheme: dark; }
+:root[data-theme="notebook"] body { background-image: repeating-linear-gradient(0deg, transparent 0 27px, #e3ebf7 27px 28px); }
+
+/* promotion slots */
+.ob-ad { display: flex; flex-direction: column; gap: 4px; }
+.ob-ad-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.ob-ad-body { display: flex; align-items: center; gap: 10px; padding: 6px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); text-decoration: none; min-height: 50px; }
+.ob-ad-body:hover { border-color: var(--muted); }
+.ob-ad-body img { flex: 0 0 auto; width: auto; max-width: 110px; height: auto; max-height: 60px; border-radius: 4px; object-fit: cover; }
+.ob-ad-body b { display: block; font-size: 14px; } .ob-ad-body small { display: block; font-size: 13px; color: var(--muted); }
+.ob-sponsor { margin: 10px 0 0; font-size: 14px; color: var(--muted); }
+.ob-sponsor a { color: var(--ink); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.ob-tag { display: inline-block; padding: 0 6px; border: 1px solid var(--line); border-radius: 4px; font-size: 11px; color: var(--muted); vertical-align: middle; }
+@media (max-width: 640px) { .ob-no-mobile { display: none !important; } }
+@media (min-width: 641px) { .ob-no-desktop { display: none !important; } }

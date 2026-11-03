@@ -113,28 +113,13 @@ Later, shared accounts, profiles and site-wide leaderboards can be added in `pla
 
 ## Making money
 
-Everything is configured in `platform/site.config.js`. Each feature stays hidden until you fill it in, so the site never shows empty or broken slots.
+Ads, sponsorships, memberships, the Supporter Vault, supporter credits, the newsletter and the admin dashboard are documented in **[docs/MONETIZATION.md](docs/MONETIZATION.md)**. Everything ships in preview mode with the ads switch off.
 
-The games themselves stay ad-free. Money features live only on the home page: the top bar, the side **Dev panel** and the footer.
-
-| Feature | Where it shows | What to fill in |
-|---|---|---|
-| Carbon Ads (one small text + image ad) | footer, bottom-left | `MONEY.carbon.serve` and `placement` from your Carbon Ads account |
-| Tip goal bar ("Server costs this month") | footer, bottom-right | `MONEY.kofiUrl`, plus `tipGoal.raised` and `goal`. Update `raised` by hand when tips come in. |
-| Shop: site themes and cursor trails | Shop button, top-right | `MONEY.kofiUrl` (where people buy) and `MONEY.supporterCodeHashes` |
-| Sandbox tile for Patreon supporters | end of the games grid | `MONEY.patreonUrl` |
-| Asset packs | Sandbox screen and Dev panel | `MONEY.assetStoreUrl` |
-| "Built with…" list with optional affiliate links | footer link and Dev panel | `BUILT_WITH`. Set `affiliate: true` on affiliate links and the site labels them. |
-| "Advertise / Sponsor a game" link | top-left | `SITE.contactEmail` |
-| Dev log | Dev panel | `DEV_LOG` |
-
-**Supporter codes.** Run `npm run make-code -- SOMECODE` and paste the printed hash into `supporterCodeHashes`. Then sell `SOMECODE` as a Ko-fi shop item. Anyone who enters it unlocks every theme and trail in their browser. The check runs in the browser, so treat it as an honour system; that's fine for cosmetics.
-
-**Sponsorships.** These are handled by hand: agree a deal, then change one game's art for the agreed period.
-
-**Licensing games.** Each game lives in its own `games/<id>/` folder, so you can hand a single game to a portal without the rest of the site.
-
-**Not built: the "share idle connection resources" SDK.** These SDKs turn visitors' browsers into a proxy network that other companies route traffic through. Visitors' connections can end up carrying traffic they'd never agree to. These SDKs can also break your host's rules and get the domain flagged by security tools. That's a lot of risk for a site whose appeal is that it feels clean.
+The short version:
+- Add a `DATABASE_URL`.
+- Make yourself admin with `ADMIN_SETUP_TOKEN`.
+- Preview everything at `/admin#preview`.
+- Connect Ko-fi when an adult account owner is ready.
 
 ## Notes
 

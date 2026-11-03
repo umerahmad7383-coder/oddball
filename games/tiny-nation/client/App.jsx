@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { ArrowLeft, RefreshCw, Coins, Users, Smile, Leaf, Car, GraduationCap, PiggyBank, Newspaper, RotateCcw, Copy, Dice5 } from 'lucide-react';
 import { TURNS, PROJECTS, newNation, offers, pickEvent, build, resolve, score, title, motto, consequences, flagFor } from '../logic/sim.js';
 import { Island, Flag } from './Island.jsx';
+import { GameSponsorNote } from '../../../platform/client/promo.jsx';
+import { recordPlay } from '../../../platform/client/api.js';
 
 const BEST_KEY = 'oddball.nation.best';
 const SYL = ['Bo', 'Zan', 'Mer', 'Quo', 'Lu', 'Fen', 'Dra', 'Pim', 'Ska', 'Vel', 'Or', 'Tum', 'Gli', 'Nor', 'Wib', 'Ara'];
@@ -72,6 +74,7 @@ export default function App() {
     let prev = null; try { prev = Number(localStorage.getItem(BEST_KEY)) || null; } catch (e) { /* ignore */ }
     if (!prev || sc > prev) { try { localStorage.setItem(BEST_KEY, String(sc)); } catch (e) { /* ignore */ } }
     setBest({ sc, prev, isBest: !prev || sc > prev });
+    recordPlay('tiny-nation', { score: sc, meta: { title: title(s).slice(0, 80) } });
     setPhase('end');
   };
   const again = () => { setName(randomName()); setSeed(Math.floor(Math.random() * 2 ** 31)); setS(null); setPhase('start'); setBest(null); };
@@ -104,6 +107,7 @@ export default function App() {
             <button className="big-b" onClick={found}>Found {name.trim() || 'the nation'}</button>
             <small>Not a real economics model. The geese are accurate though.</small>
           </div>
+          <GameSponsorNote game="tiny-nation" />
         </main>
       </div>
     );
