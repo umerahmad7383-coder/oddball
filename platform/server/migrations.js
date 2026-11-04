@@ -79,4 +79,19 @@ export const MIGRATIONS = [
       create index if not exists audit_at_idx on audit_log(at desc)
     `,
   },
+  {
+    id: 2, name: 'macro / micro photos',
+    sql: `
+      create table if not exists macro_curation (
+        object_id text primary key, file_title text not null, focus_x double precision not null, focus_y double precision not null,
+        start_zoom double precision not null, zoom_limit double precision not null, width int not null, height int not null,
+        author text, license text, license_url text, source_url text, approved boolean not null default true,
+        updated_by uuid, updated_at timestamptz not null default now()
+      );
+      create table if not exists macro_images (
+        object_id text not null references macro_curation(object_id) on delete cascade, kind text not null,
+        mime text not null, data bytea not null, primary key (object_id, kind)
+      )
+    `,
+  },
 ];

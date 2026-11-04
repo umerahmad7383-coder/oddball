@@ -6,8 +6,9 @@ import { register, login, startSession, endSession, currentUser, requireUser, re
 import { tiers, clearTierCache, membershipOf, entitlements, extendMembership, effectiveStatus } from './membership.js';
 import { handleKofiWebhook, applyKofiEvent, kofiConfigured, bump } from './payments/kofi.js';
 import { mailConfigured, sendMail } from './mail.js';
+import { registerMacro, serveMacroImage } from './macro.js';
 
-const GAMES = ['deadline-day', 'normal-form', 'tiny-nation', 'anti-scam'];
+const GAMES = ['deadline-day', 'normal-form', 'tiny-nation', 'anti-scam', 'macro-micro'];
 const LOWER_IS_BETTER = { 'normal-form': true }; // the form records time taken
 const SLOTS = ['title', 'badge', 'theme', 'accent', 'decoration', 'trail'];
 const SLOT_KIND = { title: 'title', badge: 'badge', theme: 'theme', accent: 'accent', decoration: 'decoration', trail: 'trail' };
@@ -602,6 +603,7 @@ export function buildApi() {
   });
   r.get('/api/admin/audit', async (req) => { await requireAdmin(req); return { log: await q(`select a.*, u.username from audit_log a left join users u on u.id = a.actor_id order by a.at desc limit 200`) }; });
 
+  registerMacro(r);
   return r;
 }
 
@@ -620,6 +622,7 @@ export async function handleApi(router, req, res, url) {
       if (c && c.status === 'active' && cfg.value === true && c.dest_url) { rateLimit(`go:${clientIp(req)}`, 30, 60_000); await bump('click', c.id); res.writeHead(302, { location: c.dest_url, 'cache-control': 'no-store' }); return res.end(); }
       res.writeHead(302, { location: '/' }); return res.end();
     }
+    if (url.pathname.startsWith('/api/macro/img/') && req.method === 'GET') return serveMacroImage(req, res, url);
     const m = router.match(req.method, url.pathname);
     if (!m) return sendJson(res, 404, { error: 'Not found.' });
     if (req.method !== 'GET') requireSameSite(req);

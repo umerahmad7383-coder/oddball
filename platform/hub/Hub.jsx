@@ -54,7 +54,16 @@ function AntiScamArt() {
     </div>
   );
 }
-const ART = { deadline: DeadlineArt, form: FormArt, nation: NationArt, antiscam: AntiScamArt };
+function MacroArt() {
+  return (
+    <div className="obj obj-macro" aria-hidden="true">
+      <div className="mc-field" />
+      <div className="mc-lens"><div className="mc-zoom" /></div>
+      <span className="mc-mag">12×</span>
+    </div>
+  );
+}
+const ART = { deadline: DeadlineArt, form: FormArt, nation: NationArt, antiscam: AntiScamArt, macro: MacroArt };
 
 function Game({ g }) {
   const Art = ART[g.art];

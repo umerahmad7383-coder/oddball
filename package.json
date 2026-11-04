@@ -11,7 +11,7 @@
     "serve": "npm run build && npm start",
     "photos": "node scripts/photos-manifest.mjs",
     "make-code": "node scripts/make-code.mjs",
-    "test": "node tests/deadline-day.test.mjs && node tests/normal-form.test.mjs && node tests/tiny-nation.test.mjs"
+    "test": "node tests/deadline-day.test.mjs && node tests/normal-form.test.mjs && node tests/tiny-nation.test.mjs && node tests/macro-micro.test.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.9",
@@ -19,6 +19,7 @@
     "pg": "8.23.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "sharp": "0.35.4",
     "ws": "8.18.0"
   },
   "devDependencies": {
