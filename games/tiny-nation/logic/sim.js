@@ -16,7 +16,12 @@ export const PROJECTS = {
   stadium: { name: 'Stadium', cost: 34, fx: { happy: 12, income: 2, commute: 2 }, line: 'The national team loses every week. Everyone loves it.' },
   harbour: { name: 'Harbour', cost: 30, fx: { income: 6, cap: 120, green: -4 }, line: 'Boats arrive with goods, tourists and one very large crab.' },
   museum: { name: 'Museum of Odd Things', cost: 18, fx: { happy: 5, smart: 3, income: 1 }, line: 'Featuring a spoon that may have belonged to someone.' },
+  lab: { name: 'Research lab', cost: 26, fx: { income: 5, green: 3, smart: 4 }, line: 'Your clever citizens invent things. Some of them are useful.', needs: { smart: 50 }, needsText: 'Needs education 50' },
+  metro: { name: 'Underground metro', cost: 34, fx: { commute: -14, green: 4, happy: 3 }, line: 'Trains, but secret. Commuters vanish into the ground and reappear on time.', needs: { built: 'tram' }, needsText: 'Needs a tram line first' },
 };
+/** Can this project be offered yet? */
+export const unlocked = (s, key) => { const n = PROJECTS[key].needs; if (!n) return true; if (n.smart && s.smart < n.smart) return false; if (n.built && !s.built.includes(n.built)) return false; return true; };
+export const lockedProjects = (s) => Object.keys(PROJECTS).filter((k) => PROJECTS[k].needs && !unlocked(s, k));
 
 /* Dilemmas. `when` decides if an event can appear; each choice has effects and a punchline. */
 export const EVENTS = [
@@ -38,11 +43,36 @@ export const EVENTS = [
   { id: 'debt', when: (s) => s.money < 10, text: 'The treasury is nearly empty. A bank offers a loan.', a: { label: 'Take the loan', fx: { money: 25, income: -3 }, out: 'Money now, interest forever.' }, b: { label: 'Tighten belts', fx: { happy: -5, money: 6 }, out: 'Belts tightened. Trousers stay up.' } },
 ];
 
+/* Follow-ups: consequences of earlier choices, arriving a few years later. */
+export const FOLLOWUPS = [
+  { id: 'strike', text: 'The factory workers want a pay rise, or they’ll down tools.', a: { label: 'Pay up', fx: { income: -2, happy: 5 }, out: 'Happy workers, slightly thinner profits.' }, b: { label: 'Refuse', fx: { happy: -7, income: -1 }, out: 'A two-week strike. Nobody got any widgets.' } },
+  { id: 'jamfull', text: 'The motorway has filled up. More road just brought more cars.', a: { label: 'Widen it again', fx: { money: -15, commute: -4, green: -6 }, out: 'Wider, faster, and full again by spring.' }, b: { label: 'Add express buses', fx: { money: -8, commute: -4, green: 1 }, out: 'The bus lane is the fastest lane now.' } },
+  { id: 'grads', when: (s) => s.smart >= 40, text: 'Your first school graduates want to start companies here.', a: { label: 'Give them start-up grants', fx: { money: -12, income: 5, smart: 3 }, out: 'One of them invented a better umbrella. It sells.' }, b: { label: 'Let them leave for the mainland', fx: { smart: -4, happy: -2 }, out: 'They send postcards. Mostly about better jobs.' } },
+  { id: 'spill', text: 'The oil rig has leaked onto the north beach.', a: { label: 'Pay for a proper clean-up', fx: { money: -20, green: 6 }, out: 'Expensive, but the crabs are back.' }, b: { label: 'Blame the seagulls', fx: { green: -10, happy: -6 }, out: 'Nobody believes you. Least of all the seagulls.' } },
+  { id: 'geese', text: 'Making the goose the national bird worked too well. There are geese everywhere.', a: { label: 'Build a goose sanctuary', fx: { money: -8, happy: 4, green: 3 }, out: 'The geese have a lovely home and occasionally leave it.' }, b: { label: 'Start goose tours', fx: { money: 12, happy: -2 }, out: 'Tourists love it. Residents have opinions.' } },
+  { id: 'thirsty', text: 'The data centre is drinking the island’s lake.', a: { label: 'Build a water plant', fx: { money: -14, green: 2 }, out: 'The lake recovers. The servers stay cool.' }, b: { label: 'Let it drink', fx: { green: -9, happy: -3 }, out: 'The lake is now a puddle with a sign.' } },
+  { id: 'housing', text: 'You’ve run out of homes. People are sleeping in the town hall.', a: { label: 'Emergency flats', fx: { money: -18, cap: 300, happy: 2 }, out: 'Quick, a bit grey, very welcome.' }, b: { label: 'Hand out tents', fx: { happy: -8 }, out: 'The town hall is now a campsite.' } },
+];
+const TRIGGERS = { // [cause key] -> [follow-up id, years later, how to describe the cause]
+  'build:factory': ['strike', 2, 'built a factory'],
+  'build:motorway': ['jamfull', 2, 'built a motorway'],
+  'build:school': ['grads', 3, 'built a school'],
+  'event:oil:a': ['spill', 3, 'drilled for oil'],
+  'event:goose:b': ['geese', 2, 'made the goose the national bird'],
+  'event:datacentre:a': ['thirsty', 2, 'let the data centre in'],
+};
+function schedule(s, cause) {
+  const t = TRIGGERS[cause]; if (!t) return;
+  const [id, years, why] = t;
+  if (s.followups.some((f) => f.id === id) || s.eventSeen.includes(id)) return;
+  s.followups.push({ id, due: s.turn + years, why, year: s.turn });
+}
+
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6d2b79f5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
 export function newNation(name, seed = Math.floor(Math.random() * 2 ** 31)) {
-  const s = { name: name || 'Nowhere', seed, turn: 1, money: 60, income: 0, pop: 500, cap: 800, happy: 55, green: 70, commute: 22, smart: 30, built: [], plots: [], events: [], history: [], ledger: {}, done: false, eventSeen: [] };
+  const s = { v: 2, name: name || 'Nowhere', seed, turn: 1, money: 60, income: 0, pop: 500, cap: 800, happy: 55, green: 70, commute: 22, smart: 30, built: [], plots: [], events: [], history: [], ledger: {}, done: false, eventSeen: [], followups: [], open: null, year: null };
   s.history.push(snapshot(s));
   return s;
 }
@@ -51,7 +81,7 @@ export const snapshot = (s) => ({ turn: s.turn - 1, money: Math.round(s.money), 
 /* Three project cards for this turn (deterministic per seed + turn). */
 export function offers(s) {
   const r = rng(s.seed + s.turn * 101);
-  const keys = Object.keys(PROJECTS);
+  const keys = Object.keys(PROJECTS).filter((k) => unlocked(s, k));
   const pool = keys.slice().sort(() => r() - 0.5);
   // nudge: if smog is bad, a green option is always on the table
   if (s.green < 45 && !pool.slice(0, 3).some((k) => ['solar', 'wind', 'park', 'tram'].includes(k))) pool.splice(0, 0, 'park');
@@ -59,6 +89,13 @@ export function offers(s) {
   return [...new Set(pool)].slice(0, 3);
 }
 export function pickEvent(s) {
+  // a consequence that has come due always comes first
+  const due = (s.followups || []).find((f) => f.due <= s.turn && !s.eventSeen.includes(f.id));
+  if (due) {
+    const ev = FOLLOWUPS.find((e) => e.id === due.id);
+    if (ev && (!ev.when || ev.when(s))) return { ...ev, because: `Because you ${due.why} in year ${due.year}` };
+    if (ev) s.followups = s.followups.filter((f) => f !== due); // condition no longer true: drop it quietly
+  }
   const r = rng(s.seed + s.turn * 7919);
   const ok = EVENTS.filter((e) => !s.eventSeen.includes(e.id) && (!e.when || e.when(s)));
   const conditional = ok.filter((e) => e.when);
@@ -81,15 +118,18 @@ function applyFx(s, fx, source) {
 /** Build a project (or skip with null). Returns a new state. */
 export function build(prev, key) {
   const s = structuredClone(prev);
+  s.open = { money: s.money, pop: s.pop, happy: s.happy, green: s.green, commute: s.commute, smart: s.smart };
+  s.year = { cost: 0, interest: 0, project: key || null };
   if (key) {
     const p = PROJECTS[key];
     if (s.money < p.cost) return prev;
-    s.money -= p.cost;
+    s.money -= p.cost; s.year.cost = p.cost;
     applyFx(s, p.fx, p.name);
+    schedule(s, `build:${key}`);
     s.built.push(key);
     s.plots.push({ key, turn: s.turn });
   } else {
-    s.money += 6; // saving earns a little interest
+    s.money += 6; s.year.interest = 6; // saving earns a little interest
     s.ledger.money = s.ledger.money || {}; s.ledger.money['Saving up'] = (s.ledger.money['Saving up'] || 0) + 6;
   }
   return s;
@@ -99,9 +139,13 @@ export function build(prev, key) {
 export function resolve(prev, event, choice) {
   const s = structuredClone(prev);
   const c = event[choice];
+  const moneyBefore = s.money;
   applyFx(s, c.fx, `Event: ${event.id}`);
+  const eventMoney = s.money - moneyBefore;
   s.eventSeen.push(event.id);
-  s.events.push({ turn: s.turn, id: event.id, text: event.text, choice: c.label, out: c.out });
+  s.followups = (s.followups || []).filter((f) => f.id !== event.id);
+  schedule(s, `event:${event.id}:${choice}`);
+  s.events.push({ turn: s.turn, id: event.id, text: event.text, choice: c.label, out: c.out, because: event.because || null });
   const before = { ...s };
   // economy
   const tax = 14 + Math.round(s.pop / 110);
@@ -118,7 +162,17 @@ export function resolve(prev, event, choice) {
   if (s.commute > 40) s.happy -= 2; // traffic misery
   if (s.money < 0) s.happy -= 4; // debt collectors
   s.happy = clamp(s.happy, 0, 100); s.green = clamp(s.green, 0, 100); s.smart = clamp(s.smart, 0, 100); s.commute = clamp(s.commute, 5, 90);
-  s.lastReport = { tax, income: s.income, growth, crowded, deltas: Object.fromEntries(['money', 'pop', 'happy', 'green', 'commute', 'smart'].map((k) => [k, Math.round(s[k] - prev[k])])), out: c.out };
+  // housing pressure becomes next year's problem, with a warning now
+  const nearlyFull = s.pop >= s.cap * 0.95;
+  if (nearlyFull && !s.eventSeen.includes('housing') && !(s.followups || []).some((f) => f.id === 'housing')) s.followups.push({ id: 'housing', due: s.turn + 1, why: 'ran out of homes', year: s.turn });
+  const open = prev.open || prev; // the start of the year, before this year's project
+  const year = prev.year || { cost: 0, interest: 0 };
+  s.lastReport = {
+    tax, income: s.income, growth, crowded, nearlyFull, out: c.out,
+    ledger: { opening: Math.round(open.money), project: -year.cost, interest: year.interest, event: Math.round(eventMoney), tax, income: s.income, closing: Math.round(s.money) },
+    deltas: Object.fromEntries(['money', 'pop', 'happy', 'green', 'commute', 'smart'].map((k) => [k, Math.round(s[k] - open[k])])),
+  };
+  s.open = null; s.year = null;
   s.history.push(snapshot({ ...s, turn: s.turn + 1 }));
   s.turn += 1;
   if (s.turn > TURNS) s.done = true;

@@ -94,7 +94,16 @@ export function Auction({ r, lookup }) {
   const passed = lot && lot.passes.includes(me.id);
   const away = team && team.idle >= 3;
   const biddable = lot && (lot.status === 'open' || lot.status === 'closing');
-  const bidReason = !team ? 'You’re spectating' : full ? 'Your squad is complete' : leading ? 'You’re the highest bidder' : need > max ? `Max bid ${fmtM(max)}: you must keep £5M per empty slot` : '';
+  const reserved = team && !full ? team.budget - max : 0;
+  const otherEmpty = team ? Math.max(0, st.size - team.squad.length - 1) : 0;
+  // Say exactly why a bid isn't possible, so nobody wonders whether the button is broken
+  const bidReason = !team ? 'You’re spectating'
+    : full ? 'Your squad is complete'
+      : lot && !biddable ? (lot.status === 'reveal' ? 'Bidding opens in a moment' : 'This lot is closed')
+        : leading ? 'You’re the highest bidder'
+          : need > team.budget ? `Not enough money: you have ${fmtM(team.budget)} and the next bid is ${fmtM(need)}`
+            : need > max ? `${fmtM(reserved)} is reserved for your ${otherEmpty} other empty slot${otherEmpty === 1 ? '' : 's'}, so you can bid up to ${fmtM(max)}`
+              : '';
   const bid = (amount) => { if (busy) return; setBusy(true); Sound.init(); Sound.play('mybid'); net.send({ t: 'bid', lot: lot.n, amount }); setTimeout(() => setBusy(false), 1500); };
   const pass = () => { net.send({ t: 'pass', lot: lot.n }); Sound.play('click'); };
 
@@ -188,7 +197,8 @@ export function Auction({ r, lookup }) {
         {team && (
           <div className="tb-me">
             <div><small>Budget</small><Money value={team.budget} className="big gold" /></div>
-            <div><small>Max bid</small><b>{full ? '—' : fmtM(max)}</b></div>
+            <div><small>Reserved</small><b title="£5M kept back for each other empty slot">{full ? '—' : fmtM(team.budget - max)}</b></div>
+            <div><small>Can bid</small><b>{full ? '—' : fmtM(max)}</b></div>
             <div><small>Squad</small><b>{team.squad.length}/{st.size}</b></div>
           </div>
         )}

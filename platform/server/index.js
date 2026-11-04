@@ -32,12 +32,19 @@ const server = http.createServer((req, res) => {
   let url;
   try { url = new URL(req.url, 'http://localhost'); } catch { res.writeHead(400); res.end(); return; }
   if (url.pathname.startsWith('/api/')) {
-    if (!api) { res.writeHead(503, { 'content-type': 'application/json' }); res.end('{"error":"Starting up, try again in a moment."}'); return; }
+    if (!api) { res.writeHead(503, { 'content-type': 'application/json' }); res.end(JSON.stringify({ error: dbState === 'failed' ? 'Accounts are unavailable right now. The games still work.' : 'Starting up, try again in a moment.' })); return; }
     handleApi(api, req, res, url); return;
   }
   if (url.pathname === '/healthz') {
     res.writeHead(200, { 'content-type': 'application/json' });
-    res.end(JSON.stringify({ ok: true, games: Object.fromEntries(Object.entries(GAME_SERVERS).map(([id, g]) => [id, g.stats()])) }));
+    // liveness: the games keep working even if the database is down, so this stays 200
+    res.end(JSON.stringify({ ok: true, db: dbState, games: Object.fromEntries(Object.entries(GAME_SERVERS).map(([id, g]) => [id, g.stats()])) }));
+    return;
+  }
+  if (url.pathname === '/readyz') {
+    // readiness: accounts, support and admin need the database
+    res.writeHead(dbState === 'ready' ? 200 : 503, { 'content-type': 'application/json', 'cache-control': 'no-store' });
+    res.end(JSON.stringify({ ready: dbState === 'ready', db: dbState, error: dbState === 'ready' ? undefined : dbError }));
     return;
   }
   let rel;
@@ -69,9 +76,15 @@ server.on('upgrade', (req, socket, head) => {
   game.wss.handleUpgrade(req, socket, head, (ws) => game.wss.emit('connection', ws, req));
 });
 
+let dbState = 'starting', dbError = null, attempt = 0;
 async function start() {
-  try { await initDb(); await seed(); api = buildApi(); }
-  catch (e) { console.error('database failed to start:', e); }
+  try { await initDb(); await seed(); api = buildApi(); dbState = 'ready'; dbError = null; console.log('database ready'); }
+  catch (e) {
+    dbState = 'failed'; dbError = String(e && e.message || e).slice(0, 200);
+    console.error('database failed to start:', dbError);
+    // keep retrying (a sleeping hosted database can take a while to wake), unless it's a setup mistake
+    if (!e.fatal) { attempt++; setTimeout(start, Math.min(60_000, 5_000 * attempt)); }
+  }
 }
 start();
 server.listen(PORT, () => {

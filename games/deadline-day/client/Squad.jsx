@@ -33,16 +33,24 @@ export function SquadEditor({ r, team, lookup, compact, ghost }) {
         {formationsFor(st.mode).map((k) => (
           <button key={k} className={local.formation === k ? 'on' : ''} onClick={() => { setSel(null); push(k, arrange(k, ids, lookup)); }}>{FORMATIONS[k].label}</button>
         ))}
-        <button className="best" disabled={!ids.length} onClick={() => { setSel(null); push(local.formation, arrange(local.formation, ids, lookup)); }}><Wand2 size={14} /> Best XI</button>
+        <button className="best" disabled={!ids.length} onClick={() => { setSel(null); push(local.formation, arrange(local.formation, ids, lookup)); }}><Wand2 size={14} /> Auto-arrange</button>
       </div>
       <Pitch formation={local.formation} lineup={local.lineup} lookup={lookup} editable selected={sel} onSlot={tap} onSwap={swap} compact={compact} ghost={ghost} />
       <div className="squad-hint">
         {selF ? <>Moving <b>{selF.name}</b> ({fitLabel(selF.pos, FORMATIONS[local.formation].slots[sel].pos)}). Tap another spot to swap.</> : ghost ? <>The faded player shows where <b>{ghost.f.name}</b> would go.</> : ids.length ? 'Drag a player onto another spot, or tap two spots, to swap. Lines glow when teammates share a club, nation or league.' : 'Your signings will appear here as you win them.'}
       </div>
       <div className="squad-stats">
-        <div><small>Avg rating</small><b>{ev.avgEff}</b></div>
+        {(() => {
+          // while the squad is incomplete, show the average of the players you actually have,
+          // and make it clear the score counts empty spots as zero
+          const signed = ev.players.filter((p) => p.f);
+          const open = local.lineup.filter((x) => !x).length;
+          return open > 0
+            ? <div title="Average effective rating of the players you’ve signed"><small>Signed avg</small><b>{signed.length ? Math.round(signed.reduce((t, p) => t + p.eff, 0) / signed.length) : '—'}</b></div>
+            : <div><small>Avg rating</small><b>{ev.avgEff}</b></div>;
+        })()}
         <div><small>Chemistry</small><b>{ev.chemPct}%</b></div>
-        <div className="hl"><small>Score</small><b>{ev.final}</b></div>
+        <div className="hl"><small>{local.lineup.some((x) => !x) ? 'Score so far' : 'Score'}</small><b>{ev.final}</b></div>
       </div>
     </div>
   );

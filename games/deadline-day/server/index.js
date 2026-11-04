@@ -26,17 +26,43 @@ function canBid(room, p, amount) {
 }
 
 /* ---------- lot lifecycle ---------- */
+const lotPrice = (g, f) => (g.bargain ? Math.max(R.MIN_PRICE, Math.round(R.startPrice(f.rating) / 2)) : R.startPrice(f.rating));
+
+/** Picks the next lot.
+ *  Budgets only ever shrink (every signing costs at least MIN_PRICE, which is also the reserve it frees up),
+ *  so a player nobody can afford now will never be affordable at that price later in the same round.
+ *  Those players are set aside in ONE scan — never shown one by one — and return in the half-price bargain round.
+ *  When nothing left is affordable even at half price, the auction moves straight on to tactics. */
 function nextLot(room, api) {
   const g = room.game, t = now();
   const ps = api.players(room);
   const needing = ps.filter((p) => g.teams[p.id] && !full(g, g.teams[p.id]) && present(p));
   if (!needing.length) return startTactics(room, api);
-  if (g.pi >= g.pool.length) {
+  // the most any manager who could actually bid right now is able to pay for one player
+  const cap = Math.max(0, ...ps.filter((p) => canBid(room, p, 0)).map((p) => R.maxBid(g.teams[p.id], g.size)));
+
+  for (let round = 0; round < 2; round++) {
+    const rest = g.pool.slice(g.pi);
+    const ok = [], tooDear = [];
+    for (const id of rest) (lotPrice(g, BY_ID[id]) <= cap ? ok : tooDear).push(id);
+    if (tooDear.length) {
+      g.pool = g.pool.slice(0, g.pi).concat(ok);
+      if (!g.bargain) g.unsold.push(...tooDear);
+    }
+    if (ok.length) break;
+    // nothing left this round that anyone can pay for
     if (!g.bargain && g.unsold.length) {
       g.bargain = true; g.pool = shuffle(g.unsold); g.unsold = []; g.pi = 0;
       api.feed(room, 'Bargain bin! Unsold players come back at half price.', 'good');
-    } else return startTactics(room, api);
+      continue;
+    }
+    if (g.bargain || !g.unsold.length) {
+      api.feed(room, 'Nobody can afford anyone else. On to tactics!');
+      return startTactics(room, api);
+    }
   }
+  if (g.pi >= g.pool.length) return startTactics(room, api);
+
   // Pick lots managers actually need. If a manager is down to their last one or two slots
   // (say, only a goalkeeper left), lots for those positions are put up first most of the time.
   const openSlots = [], urgent = new Set();
@@ -53,10 +79,11 @@ function nextLot(room, api) {
   if (j < 0) j = rest.findIndex((id) => fitsAny(id, openSlots));
   if (j > 0) { const k = g.pi + j; [g.pool[g.pi], g.pool[k]] = [g.pool[k], g.pool[g.pi]]; }
   const f = BY_ID[g.pool[g.pi++]];
-  const price = g.bargain ? Math.max(R.MIN_PRICE, Math.round(R.startPrice(f.rating) / 2)) : R.startPrice(f.rating);
+  const price = lotPrice(g, f);
   g.lotN++;
   g.lot = { n: g.lotN, id: f.id, startPrice: price, price, leaderId: null, bids: [], passes: [], acted: [], status: 'reveal', openAt: t + ms(R.REVEAL_MS), endsAt: t + ms(R.REVEAL_MS) + ms(R.BID_MS), doneAt: 0, bargain: g.bargain };
-  if (!ps.some((p) => canBid(room, p, price))) { g.lot.status = 'skipped'; g.lot.doneAt = t + ms(R.SKIP_MS); }
+  // safety net only: by construction somebody can afford this lot
+  if (!ps.some((p) => canBid(room, p, price))) { g.lot.status = 'skipped'; g.lot.doneAt = t + ms(R.SKIP_MS); if (!g.bargain) g.unsold.push(f.id); }
   api.pushRoom(room);
 }
 function isAway(g, p) { const tm = g.teams[p.id]; return !!tm && tm.idle >= R.AWAY_AFTER_LOTS; }
@@ -69,6 +96,8 @@ function checkClose(room, api) {
 }
 function settle(room, api) {
   const g = room.game, lot = g.lot, t = now();
+  // a lot is settled exactly once, so nobody can ever be charged twice
+  if (!lot || (lot.status !== 'open' && lot.status !== 'closing')) return;
   if (lot.autoTimer) { clearTimeout(lot.autoTimer); lot.autoTimer = null; }
   for (const tm of Object.values(g.teams)) if (tm.auto && tm.auto.lot === lot.n) tm.auto = null;
   const winner = lot.leaderId && room.players.get(lot.leaderId);
@@ -210,7 +239,8 @@ function onMessage(room, p, m, api) {
       const min = R.nextBid(lot), amount = Math.round(Number(m.amount));
       if (!Number.isFinite(amount) || amount < min) return `Someone beat you to it. The next bid is ${R.fmtM(min)}.`;
       const max = R.maxBid(team, g.size);
-      if (amount > max) return `You can go up to ${R.fmtM(max)} and still afford the rest of your squad.`;
+      if (amount > team.budget) return `Not enough money: you have ${R.fmtM(team.budget)}.`;
+      if (amount > max) return `You can bid up to ${R.fmtM(max)}. The rest is kept back so you can still fill your other empty slots.`;
       placeBid(room, api, p, amount, false);
       return null;
     }
@@ -304,3 +334,6 @@ export function createDeadlineDayServer() {
     },
   });
 }
+
+/* Internals for the automated tests in tests/. Not reachable from the network. */
+export const __test = { nextLot, settle, startTactics, tick, onMessage, canBid, lotPrice };

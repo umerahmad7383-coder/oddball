@@ -637,3 +637,5 @@ button:disabled { cursor: not-allowed; }
 
 .hub-link { position: absolute; top: 14px; left: 12px; z-index: 3; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--neon-a); color: var(--neon-a); font-weight: bold; font-size: 13px; text-decoration: none; }
 .hub-link:hover { box-shadow: 0 0 12px var(--glow-a); }
+.res-advice { max-width: 520px; margin: 4px auto 10px; padding: 10px 14px; border: 2px solid #0842d1; border-radius: 6px; background: #ece9d8; color: #111; font: 14px/1.45 Tahoma, Verdana, sans-serif; text-align: left; }
+.res-advice span { display: block; margin-top: 4px; }

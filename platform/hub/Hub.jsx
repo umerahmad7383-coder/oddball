@@ -1,26 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { X, ExternalLink, Coffee } from 'lucide-react';
-import { SITE, GAMES } from '../games.js';
-import { BUILT_WITH, DEV_LOG } from '../site.config.js';
+import { Coffee } from 'lucide-react';
+import { SITE, GAMES, isNew } from '../games.js';
 import { usePromo, useImpression, FooterAd, SponsorLine, linkProps, deviceClass } from '../client/promo.jsx';
-import { track, previewMode } from '../client/api.js';
+import { track } from '../client/api.js';
 import { BadgeIcon } from '../site/profile.jsx';
-
-function Ball({ className = '' }) {
-  return (
-    <svg className={className} viewBox="0 0 100 100" aria-hidden="true">
-      <circle cx="50" cy="50" r="46" fill="var(--ink)" />
-      <path d="M50 24 L66 36 L60 55 L40 55 L34 36 Z" fill="var(--bg)" />
-      <path d="M50 4 L50 24 M66 36 L88 30 M60 55 L74 76 M40 55 L26 76 M34 36 L12 30" stroke="var(--bg)" strokeWidth="5" />
-    </svg>
-  );
-}
+import { Mark } from '../site/mark.jsx';
 
 /* Each game gets its own object instead of a matching card. */
 function DeadlineArt() {
   return (
     <div className="obj obj-deadline" aria-hidden="true">
-      <div className="dl-card"><b>91</b><span>ST</span><i /><em>HAALAND?</em></div>
+      <div className="dl-card"><b>91</b><span>ST</span><img src="/photos/erling-haaland.png" alt="" loading="lazy" width="96" height="96" /><em>HAALAND?</em></div>
       <div className="dl-bid">£84M</div>
       <div className="dl-tape">DONE DEAL · DONE DEAL · DONE DEAL · DONE DEAL ·</div>
     </div>
@@ -68,55 +58,17 @@ const ART = { deadline: DeadlineArt, form: FormArt, nation: NationArt, antiscam:
 
 function Game({ g }) {
   const Art = ART[g.art];
-  const inner = (
-    <>
-      {Art ? <Art /> : null}
-      <h2>{g.title}{g.isNew && <span className="new">new</span>}</h2>
-      <p>{g.blurb}</p>
-      <small>{g.players}</small>
-    </>
-  );
-  return <li className={`game g-${g.slug}`}><a href={g.href}>{inner}</a></li>;
-}
-
-function useLiveCount() {
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    let alive = true;
-    const load = () => fetch('/healthz', { cache: 'no-store' }).then((r) => r.json()).then((j) => { if (alive) setN(Object.values(j.games || {}).reduce((t, g) => t + (g.players || 0), 0)); }).catch(() => {});
-    load(); const id = setInterval(load, 20000);
-    return () => { alive = false; clearInterval(id); };
-  }, []);
-  return n;
-}
-
-function Modal({ title, onClose, children, wide }) {
-  useEffect(() => { const k = (e) => { if (e.key === 'Escape') onClose(); }; window.addEventListener('keydown', k); return () => window.removeEventListener('keydown', k); }, [onClose]);
   return (
-    <div className="modal" role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
-      <div className={`modal-box ${wide ? 'wide' : ''}`} onClick={(e) => e.stopPropagation()}>
-        <div className="modal-head"><h3>{title}</h3><button className="icon" aria-label="Close" onClick={onClose}><X size={20} /></button></div>
-        {children}
-      </div>
-    </div>
+    <li className={`game g-${g.slug}`}>
+      <a href={g.href}>
+        {Art ? <Art /> : null}
+        <h2>{g.title}{isNew(g) && <span className="new">new</span>}</h2>
+        <p>{g.blurb}</p>
+        <small>{g.players}</small>
+      </a>
+    </li>
   );
 }
-
-function DevPanel({ open, onClose, focusBuilt }) {
-  // `inert` keeps the closed panel out of the tab order and away from screen readers
-  return (
-    <aside className={`devpanel ${open ? 'open' : ''}`} aria-label="Dev log" {...(open ? {} : { inert: '' })}>
-      <div className="dp-head"><b>Dev log</b><button className="icon" aria-label="Close" onClick={onClose}><X size={18} /></button></div>
-      <ol className="devlog">{DEV_LOG.map((d, i) => <li key={i}><time>{d.date}</time><span>{d.text}</span></li>)}</ol>
-      <section id="built-with" className={focusBuilt ? 'flash' : ''}>
-        <h4>Built with</h4>
-        <ul className="built">{BUILT_WITH.map((b) => <li key={b.name}><a href={b.url} target="_blank" rel={b.affiliate ? 'sponsored noreferrer' : 'noreferrer'}>{b.name} <ExternalLink size={12} /></a><span>{b.what}{b.affiliate ? ' (affiliate link)' : ''}</span></li>)}</ul>
-      </section>
-      <section><h4>Support</h4><p className="muted">oddball is free. If you’d like to help, <a className="link" href="/support">here’s how</a>.</p></section>
-    </aside>
-  );
-}
-
 /* A sponsored game: same shape as the others, always labelled. */
 function SponsoredGame({ item, preview }) {
   const ref = useImpression(item, preview);
@@ -136,9 +88,9 @@ function GameOfWeek({ item, preview }) {
   const g = GAMES.find((x) => x.slug === item.game);
   if (!g) return null;
   const Art = ART[g.art];
-  const href = item.href && item.sponsored ? item.href : g.href;
+  const external = item.href && item.sponsored;
   return (
-    <a className={`gotw ${deviceClass(item)}`} href={href} ref={ref} {...(item.href && item.sponsored ? { target: '_blank', rel: 'sponsored noopener noreferrer' } : {})}>
+    <a className={`gotw ${deviceClass(item)}`} href={external ? item.href : g.href} ref={ref} {...(external ? { target: '_blank', rel: 'sponsored noopener noreferrer' } : {})}>
       <div className="gotw-art">{item.image ? <img src={item.image} alt="" /> : Art ? <Art /> : null}</div>
       <div className="gotw-text">
         <span className="gotw-kicker">{item.label || 'Game of the week'}{item.sponsored && item.sponsor ? ` · sponsored by ${item.sponsor}` : item.sponsored ? ' · sponsored' : ''}</span>
@@ -148,40 +100,50 @@ function GameOfWeek({ item, preview }) {
     </a>
   );
 }
-function useMe() {
-  const [me, setMe] = useState(null);
-  useEffect(() => { fetch('/api/me', { credentials: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).then((j) => setMe(j && j.user ? j : null)).catch(() => {}); }, []);
-  return me;
+function useJson(path) {
+  const [v, set] = useState(null);
+  useEffect(() => { let ok = true; fetch(path, { credentials: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).then((j) => ok && set(j)).catch(() => {}); return () => { ok = false; }; }, [path]);
+  return v;
+}
+function useLiveCount() {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    let alive = true;
+    const load = () => fetch('/healthz', { cache: 'no-store' }).then((r) => r.json()).then((j) => { if (alive) setN(Object.values(j.games || {}).reduce((t, g) => t + (g.players || 0), 0)); }).catch(() => {});
+    load(); const id = setInterval(load, 30000);
+    return () => { alive = false; clearInterval(id); };
+  }, []);
+  return n;
 }
 
 export function Hub() {
-  const [panel, setPanel] = useState(false), [built, setBuilt] = useState(false);
   const live = useLiveCount();
-  const me = useMe();
+  const me = useJson('/api/me');
+  const sup = useJson('/api/support'); // tells us whether coffee and advertising are actually set up
   const { items, preview } = usePromo('home');
   useEffect(() => { track('home'); }, []);
   const pick = (pl) => items.filter((i) => i.placement === pl);
   const sponsor = pick('home_sponsor')[0], footer = pick('footer')[0], gotw = pick('gotw')[0], cards = pick('sponsored_card');
   const random = () => { window.location.href = GAMES[Math.floor(Math.random() * GAMES.length)].href; };
-  const card = me && me.profile.card;
+  const card = me && me.user ? me.profile.card : null;
   return (
     <div className="page">
       <nav className="top" aria-label="Site">
-        <span className="top-l">{live > 0 && <span className="live"><i />{live} playing</span>}</span>
+        <span className="top-l">{live > 0 && <span className="live"><i aria-hidden="true" />{live} playing right now</span>}</span>
         <span className="top-r">
+          <a href="/notes">notes</a>
           <a href="/support">support</a>
-          <a href="/vault">vault</a>
-          <button onClick={() => setPanel((p) => !p)} aria-expanded={panel}>dev log</button>
           {card ? <a href="/me" className="me-chip" style={{ '--acc': card.accent || 'var(--ink)' }}>{card.badge && <BadgeIcon badge={card.badge} size={15} />}{card.username}</a> : <a href="/login">sign in</a>}
         </span>
       </nav>
 
       <main>
         <header className="intro">
-          <h1 className="wordmark" aria-label={SITE.name}><Ball className="wm-ball" /><span>ddball</span></h1>
+          <h1 className="wordmark" aria-label={SITE.name}><Mark className="wm-mark" /><span>ddball</span></h1>
           <p>{SITE.tagline} <button className="rand" onClick={random}>Or let fate decide.</button></p>
           <SponsorLine item={sponsor} preview={preview} />
         </header>
+        {window.location.pathname !== '/' && <p className="lost" role="alert">There’s nothing at <code>{window.location.pathname}</code>. Here are the games instead.</p>}
         {gotw && <GameOfWeek item={gotw} preview={preview} />}
         <ul className="games">
           {GAMES.map((g) => <Game key={g.slug} g={g} />)}
@@ -193,15 +155,13 @@ export function Hub() {
         <div className="foot-l"><FooterAd item={footer} preview={preview} /></div>
         <div className="foot-c">
           <span>{SITE.name}</span>
+          <a href="/notes">notes</a>
           <a href="/supporters">supporters</a>
-          <a href="/advertise">advertise with oddball</a>
+          {sup && sup.contact && <a href="/advertise">advertise</a>}
           <a href="/privacy">privacy</a>
-          <button onClick={() => { setPanel(true); setBuilt(true); setTimeout(() => setBuilt(false), 1600); }}>built with…</button>
         </div>
-        <div className="foot-r"><a className="coffee" href="/support#coffee"><Coffee size={16} /> Enjoying oddball? Buy us a coffee.</a></div>
+        <div className="foot-r">{sup && sup.coffee && sup.coffee.url && <a className="coffee" href="/support#coffee"><Coffee size={16} aria-hidden="true" /> Enjoying oddball? Buy us a coffee.</a>}</div>
       </footer>
-
-      <DevPanel open={panel} onClose={() => setPanel(false)} focusBuilt={built} />
     </div>
   );
 }

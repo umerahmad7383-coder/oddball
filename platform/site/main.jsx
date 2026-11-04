@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Support, Vault, Me, Login, Supporters, Advertise, Privacy, Notes, NewsletterPage, PublicProfile, Loading, useMe } from './pages.jsx';
 import { Admin } from './admin.jsx';
 import { BadgeIcon } from './profile.jsx';
+import { Mark } from './mark.jsx';
 import { initCosmetics } from '../client/cosmetics.js';
 import '../client/themes.css';
 import './site.css';
@@ -34,17 +35,16 @@ function App() {
   return (
     <div className={`site ${page === 'admin' ? 'wide' : ''}`}>
       <header className="sbar">
-        <a href="/" className="sbrand">oddball</a>
+        <a href="/" className="sbrand"><Mark className="sbrand-mark" />oddball</a>
         <nav aria-label="Site">
-          <a href="/" >games</a>
-          <a href="/support" className={page === 'support' ? 'on' : ''}>support</a>
-          <a href="/vault" className={page === 'vault' ? 'on' : ''}>vault</a>
-          <a href="/supporters" className={page === 'supporters' ? 'on' : ''}>supporters</a>
+          <a href="/">games</a>
+          <a href="/notes" className={page === 'notes' ? 'on' : ''}>notes</a>
+          <a href="/support" className={['support', 'vault', 'supporters'].includes(page) ? 'on' : ''}>support</a>
           {card ? <a href="/me" className={`me-chip ${page === 'me' ? 'on' : ''}`} style={{ '--acc': card.accent || 'var(--ink)' }}>{card.badge && <BadgeIcon badge={card.badge} size={14} />}{card.username}</a> : me === null ? <a href="/login">sign in</a> : null}
         </nav>
       </header>
       <main className="smain">{body}</main>
-      <footer className="sfoot"><a href="/">oddball</a><a href="/supporters">supporters</a><a href="/advertise">advertise</a><a href="/privacy">privacy</a><a href="/notes">dev notes</a></footer>
+      <footer className="sfoot"><a href="/">oddball</a><a href="/notes">notes</a><a href="/vault">vault</a><a href="/supporters">supporters</a><a href="/privacy">privacy</a></footer>
     </div>
   );
 }

@@ -232,6 +232,7 @@ export function newGame() {
     banner: null, bsodUntil: -1, shakeUntil: -1, explorerDown: 0, recycleUsed: false,
     moneyLost: 0, maxCpu: START_CPU, fanSpin: 0, overload: null, lastSurge: -99, nuisanceIn: 11,
     queue: shuffle(['download', 'tech', 'crypto', 'antivirus', 'overload']), seenTips: {},
+    lostBy: {}, heatBy: {}, // what cost you money and heat, by kind of window, for the end-of-run advice
     bounds: { w: 900, h: 560 }, endReason: null, hotWarned: false, poorWarned: false,
     defeatedBy: { download: 0, tech: 0, crypto: 0, antivirus: 0, overload: 0, prize: 0 },
     feed: [], emotes: [], watchers: 0, flipUntil: -1, fakeHudUntil: -1, updateUntil: -1, fanBrokenUntil: -1, fanWeakUntil: -1,
@@ -244,7 +245,7 @@ export function buildResult(s) {
   const won = s.phase === 'won';
   const money = Math.max(0, Math.round(s.money));
   const sc = computeScore(survival, money, s.defeated, won);
-  return { won, reason: s.endReason, survival, money, defeated: s.defeated, waves: s.wave, maxCpu: Math.round(s.maxCpu), moneyLost: Math.round(s.moneyLost), fan: s.fanClicks, ...sc, defeatedBy: { ...s.defeatedBy } };
+  return { won, reason: s.endReason, survival, money, defeated: s.defeated, waves: s.wave, maxCpu: Math.round(s.maxCpu), moneyLost: Math.round(s.moneyLost), fan: s.fanClicks, ...sc, defeatedBy: { ...s.defeatedBy }, lostBy: { ...(s.lostBy || {}) }, heatBy: { ...(s.heatBy || {}) } };
 }
 
 /* ---------- engine ---------- */
@@ -258,7 +259,7 @@ export function makeEngine(Gref, rerender, endRef, hooks = {}) {
   E.diff = () => clamp(S().elapsed / GAME_LEN, 0, 1);
 
   E.log = (msg, kind = 'info') => { const s = S(); s.log.push({ id: s.uid++, t: s.elapsed, msg, kind }); if (s.log.length > 150) s.log.splice(0, s.log.length - 150); };
-  E.toast = (title, body, icon = 'Info', tone = 'info') => { const s = S(); s.toasts.push({ id: s.uid++, title, body, icon, tone, until: s.elapsed + 5.5 }); if (s.toasts.length > 3) s.toasts.shift(); Sound.play('notify'); };
+  E.toast = (title, body, icon = 'Info', tone = 'info') => { const s = S(); s.toasts.push({ id: s.uid++, title, body, icon, tone, until: s.elapsed + (title === 'New scam!' ? 9 : 5.5) }); if (s.toasts.length > 3) s.toasts.shift(); Sound.play('notify'); };
   E.floater = (text, color, w) => {
     const s = S();
     const x = w ? w.x + w.w / 2 : s.bounds.w / 2, y = w ? w.y + 40 : s.bounds.h / 2;
@@ -268,13 +269,14 @@ export function makeEngine(Gref, rerender, endRef, hooks = {}) {
     const s = S(); if (s.phase !== 'playing') return;
     delta = Math.round(delta * 100) / 100;
     s.money += delta;
-    if (delta < 0 && !opts.trade) s.moneyLost += -delta;
+    if (delta < 0 && !opts.trade) { s.moneyLost += -delta; const k = w ? w.kind : 'other'; s.lostBy[k] = (s.lostBy[k] || 0) + -delta; }
     if (!opts.silent) E.floater((delta < 0 ? '−' : '+') + fmtMoney(Math.abs(delta)), delta < 0 ? '#ff4f7b' : '#3dff8a', w);
     if (msg) E.log(msg, delta < 0 ? 'bad' : 'good');
     if (delta < 0 && !opts.trade && !opts.quiet) Sound.play('cash');
   };
   E.heat = (delta, w) => {
     const s = S(); s.cpu = clamp(s.cpu + delta, 32, 130);
+    if (delta > 0 && w) s.heatBy[w.kind] = (s.heatBy[w.kind] || 0) + delta;
     if (Math.abs(delta) >= 3) E.floater((delta > 0 ? '+' : '−') + Math.abs(delta).toFixed(0) + '°C', delta > 0 ? '#ffb020' : '#7fe3ff', w);
   };
   E.shake = (w) => { if (w) w.shakeUntil = S().elapsed + 0.4; };
@@ -322,7 +324,11 @@ export function makeEngine(Gref, rerender, endRef, hooks = {}) {
   };
 
   /* scams */
-  E.tip = (type) => { const s = S(); if (s.seenTips[type]) return; s.seenTips[type] = true; E.log('TIP: ' + TIPS[type], 'tip'); };
+  E.tip = (type) => {
+    const s = S(); if (s.seenTips[type]) return; s.seenTips[type] = true; E.log('TIP: ' + TIPS[type], 'tip');
+    // first-time players learn each scam the moment it appears, instead of reading a manual first
+    if (hooks.guided && TIPS[type]) E.toast('New scam!', TIPS[type], 'Info', 'info');
+  };
   E.spawnScam = (type) => {
     const s = S(), d = E.diff(); let win = null;
     switch (type) {
@@ -460,7 +466,7 @@ export function makeEngine(Gref, rerender, endRef, hooks = {}) {
     const net = d.returned - d.invested;
     if (d.invested === 0) E.defeat(w, `You ignored the ${d.coin} hype. Wise.`, 'crypto');
     else if (net >= 0) E.defeat(w, `Escaped the rug pull with ${fmtMoney(net)} profit!`, 'crypto');
-    else { s.moneyLost += -net; E.log(`You were the exit liquidity. Net loss: ${fmtMoney(-net)}.`, 'bad'); Sound.play('close'); }
+    else { s.moneyLost += -net; s.lostBy.crypto = (s.lostBy.crypto || 0) + -net; E.log(`You were the exit liquidity. Net loss: ${fmtMoney(-net)}.`, 'bad'); Sound.play('close'); }
   };
 
   E.avFake = (w, which) => {
@@ -630,6 +636,7 @@ export function makeEngine(Gref, rerender, endRef, hooks = {}) {
     }
     let heat = 0;
     for (const w of s.windows.slice()) {
+      const h0 = heat;
       if (w.closing) continue; const dd = w.data;
       switch (w.kind) {
         case 'download':
@@ -661,6 +668,7 @@ export function makeEngine(Gref, rerender, endRef, hooks = {}) {
           break;
         default: break;
       }
+      if (heat > h0) s.heatBy[w.kind] = (s.heatBy[w.kind] || 0) + (heat - h0) * dt;
     }
     s.cpu += heat * dt * (1 + 0.3 * d) * hs;
     s.fanSpin = Math.max(0, s.fanSpin - dt * 2.2);

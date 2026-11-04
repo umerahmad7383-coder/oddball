@@ -401,3 +401,5 @@ table.lb { width: 100%; border-collapse: separate; border-spacing: 0 5px; font-s
   .dd-bar { gap: 6px; padding: 0 8px; } .dd-mark { font-size: 20px; } .dd-mark em { display: none; } .back { padding: 6px; }
   .tk-label { font-size: 14px; padding-left: 10px; }
 }
+.link-btn { padding: 10px 6px; min-height: 40px; }
+@media (max-width: 360px) { .dd-bar { gap: 4px; padding: 0 6px; } .bar-right { gap: 0; } .bar-right .icon-btn { width: 32px; } .dd-mark { font-size: 17px; } .bar-right .chip { display: none; } }

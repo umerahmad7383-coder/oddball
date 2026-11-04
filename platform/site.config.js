@@ -1,7 +1,7 @@
 /* oddball site settings that rarely change. Everything money-related is managed at /admin. */
 export const SITE = {
   name: 'oddball',
-  tagline: 'Strange little games. Pick one.',
+  tagline: 'Small games with strange consequences.',
   contactEmail: '',            // e.g. 'hello@oddball.fun' → shows "Advertise / Sponsor a game" (top-left)
 };
 
@@ -19,6 +19,7 @@ export const BUILT_WITH = [
 
 /* Dev log shown in the side panel, newest first. */
 export const DEV_LOG = [
+  { date: '4 Nov 2026', text: 'Deadline Day no longer flicks through players nobody can afford, and bargains return properly. The Perfectly Normal Form now has three acts, and every form needs a different answer. Tiny Nation remembers your choices: some come back years later. Anti-Scam teaches each scam as it appears and tells you what got you.' },
   { date: '3 Nov 2026', text: 'Cleaned up the home page. Fewer boxes, more games.' },
   { date: '2 Nov 2026', text: 'Two new games: Tiny Nation and The Perfectly Normal Form (good luck).' },
   { date: '2 Nov 2026', text: 'Deadline Day: new TV-studio look, auto-bidding, “where he’d play” previews, drag-and-drop XI, smarter lots, summer 2026 transfers.' },

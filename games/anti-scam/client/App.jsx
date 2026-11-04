@@ -26,14 +26,15 @@ export default function App() {
 
   const commit = (next) => { storeRef.current = next; setStore(next); saveStore(next); };
   const toggleMute = () => { const m = !muted; Sound.muted = m; setMuted(m); commit({ ...storeRef.current, muted: m }); if (!m) { Sound.init(); Sound.play('click'); } };
-  const launch = (player) => { Sound.init(); Sound.play('wave'); setCurrent({ player }); setGameKey((k) => k + 1); setScreen('game'); };
+  const launch = (player, guided = false) => { Sound.init(); Sound.play('wave'); setCurrent({ player, guided }); setGameKey((k) => k + 1); setScreen('game'); };
   const cleanName = (n, d) => (n || '').trim().slice(0, 16) || d;
 
   const playSolo = () => {
     const p = cleanName(name, 'Player 1'); setName(p); setMatch(null);
     const first = !storeRef.current.seenTutorial;
     commit({ ...storeRef.current, lastName: p, seenTutorial: true });
-    if (first) { setTutNext(p); setScreen('tutorial'); } else launch(p);
+    // first run: jump straight in; each scam explains itself the first time it shows up. The manual is still in the menu.
+    launch(p, first);
   };
   const startMatch = () => {
     const n = [cleanName(names[0], 'Player 1'), cleanName(names[1], 'Player 2')];
@@ -53,7 +54,7 @@ export default function App() {
     const best = { ...s.best }, records = [];
     if (result.score > best.score) { best.score = result.score; records.push('high score'); }
     if (Math.floor(result.survival) > best.survival) { best.survival = Math.floor(result.survival); records.push('longest survival'); }
-    if (result.won && result.money > best.money) { best.money = result.money; records.push('most money kept'); }
+    if (result.won && result.money > best.money) { best.money = result.money; records.push('most money after a win'); }
     if (result.defeated > best.defeated) { best.defeated = result.defeated; records.push('most scams defeated'); }
     let next = { ...s, leaderboard: lb, best, gamesPlayed: s.gamesPlayed + 1, wins: s.wins + (result.won ? 1 : 0) };
     if (match) {
@@ -89,7 +90,7 @@ export default function App() {
 
   switch (screen) {
     case 'game':
-      return <Game key={gameKey} player={current.player} onEnd={handleEnd} muted={muted} onToggleMute={toggleMute} matchLabel={matchLabel} />;
+      return <Game key={gameKey} player={current.player} guided={!!current.guided} onEnd={handleEnd} muted={muted} onToggleMute={toggleMute} matchLabel={matchLabel} />;
     case 'tutorial':
       return (
         <Screen><Tutorial onDone={() => { if (tutNext) { const p = tutNext; setTutNext(null); launch(p); } else setScreen('menu'); }} doneLabel={tutNext ? 'Start playing' : 'Got it'} onBack={() => { setTutNext(null); setScreen('menu'); }} /></Screen>

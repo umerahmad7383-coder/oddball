@@ -10,7 +10,8 @@
     "start": "node platform/server/index.js",
     "serve": "npm run build && npm start",
     "photos": "node scripts/photos-manifest.mjs",
-    "make-code": "node scripts/make-code.mjs"
+    "make-code": "node scripts/make-code.mjs",
+    "test": "node tests/deadline-day.test.mjs && node tests/normal-form.test.mjs && node tests/tiny-nation.test.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.9",

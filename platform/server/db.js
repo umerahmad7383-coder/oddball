@@ -24,6 +24,11 @@ export async function initDb() {
       },
     };
   } else {
+    if (process.env.RENDER) {
+      // the embedded database needs about 1 GB to start; Render's free instance has 512 MB and would crash-loop
+      const e = new Error('DATABASE_URL is not set. Add it in Render → Environment. The embedded database is for local development only.');
+      e.fatal = true; throw e;
+    }
     const { PGlite } = await import('@electric-sql/pglite');
     const dir = process.env.PGLITE_DIR || path.resolve('data/pglite');
     fs.mkdirSync(dir, { recursive: true });

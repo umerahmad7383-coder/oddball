@@ -1,10 +1,13 @@
 /* The oddball catalogue, in display order.
- * Add a game: create games/<slug>/, a page at <slug>/index.html, an entry here, and art in hub/Hub.jsx. */
+ * Add a game: create games/<slug>/, a page at <slug>/index.html, an entry here, and art in hub/Hub.jsx.
+ * `released` drives the "new" label, so nothing stays "new" forever. */
 export { SITE } from './site.config.js';
 
 export const GAMES = [
-  { slug: 'deadline-day', href: '/deadline-day/', title: 'Deadline Day', blurb: 'Bid against your friends for real footballers. Best XI wins.', players: '2–8 players, online', art: 'deadline', isNew: true },
-  { slug: 'normal-form', href: '/normal-form/', title: 'The Perfectly Normal Form', blurb: 'It’s just a form. Mostly.', players: 'Solo', art: 'form', isNew: true },
-  { slug: 'tiny-nation', href: '/tiny-nation/', title: 'Tiny Nation', blurb: 'You get an island and ten years. Try not to ruin it.', players: 'Solo', art: 'nation', isNew: true },
-  { slug: 'anti-scam', href: '/anti-scam/', title: 'Anti-Scam Arcade', blurb: 'Survive three minutes on the worst computer ever made.', players: 'Solo, or 2–4 online', art: 'antiscam' },
+  { slug: 'deadline-day', href: '/deadline-day/', title: 'Deadline Day', blurb: 'Bid against your friends for real footballers. The best squad wins.', players: '2–8 players, online', art: 'deadline', released: '2026-11-01' },
+  { slug: 'normal-form', href: '/normal-form/', title: 'The Perfectly Normal Form', blurb: 'It’s just a form. The rules keep changing.', players: 'Solo', art: 'form', released: '2026-11-02' },
+  { slug: 'tiny-nation', href: '/tiny-nation/', title: 'Tiny Nation', blurb: 'You get an island and ten years. Every choice comes back later.', players: 'Solo', art: 'nation', released: '2026-11-02' },
+  { slug: 'anti-scam', href: '/anti-scam/', title: 'Anti-Scam Arcade', blurb: 'Survive three minutes on the worst computer ever made.', players: 'Solo, or 2–4 online', art: 'antiscam', released: '2026-11-01' },
 ];
+const NEW_FOR_DAYS = 21;
+export const isNew = (g, now = Date.now()) => !!g.released && now - new Date(g.released).getTime() < NEW_FOR_DAYS * 86400_000;

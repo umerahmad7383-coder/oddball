@@ -20,10 +20,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 
 .intro { text-align: center; padding: 34px 0 48px; }
 .wordmark { margin: 0; display: inline-flex; align-items: center; font-weight: 800; font-size: clamp(72px, 15vw, 150px); letter-spacing: -0.035em; line-height: 0.85; }
-.wm-ball { width: 0.72em; height: 0.72em; margin-right: 0.03em; transform-origin: 50% 100%; animation: drop 1.1s cubic-bezier(0.3, 0, 0.3, 1) both; cursor: pointer; }
-.wordmark:hover .wm-ball { animation: hop 0.6s cubic-bezier(0.3, 0, 0.3, 1); }
-@keyframes drop { 0% { transform: translateY(-1.3em) rotate(-140deg); } 55% { transform: translateY(0) rotate(0) scale(1.08, 0.86); } 72% { transform: translateY(-0.18em) scale(0.97, 1.04); } 100% { transform: translateY(0); } }
-@keyframes hop { 40% { transform: translateY(-0.3em) rotate(90deg); } 70% { transform: translateY(0) scale(1.08, 0.9); } }
 .intro p { margin: 16px 0 0; font-size: 20px; color: var(--muted); }
 .rand { color: var(--muted); text-decoration: underline; text-underline-offset: 4px; text-decoration-style: dotted; padding: 8px 2px; }
 .rand:hover { color: var(--accent); }
@@ -92,17 +88,6 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 @media (max-width: 760px) { .foot { grid-template-columns: 1fr; justify-items: center; text-align: center; } .foot-r { justify-content: center; } }
 
 /* ---- dev log panel ---- */
-.devpanel { position: fixed; top: 0; right: 0; bottom: 0; z-index: 40; width: min(360px, 92vw); padding: calc(14px + env(safe-area-inset-top, 0px)) 20px 20px; box-sizing: border-box; background: var(--bg); border-left: 1px solid var(--line); overflow: auto; transform: translateX(105%); visibility: hidden; transition: transform 0.25s ease, visibility 0s 0.25s; }
-.devpanel.open { transform: none; visibility: visible; transition: transform 0.25s ease, visibility 0s; box-shadow: -10px 0 40px rgba(0, 0, 0, 0.12); }
-.dp-head { display: flex; justify-content: space-between; align-items: center; font-size: 20px; margin-bottom: 10px; }
-.devpanel h4 { margin: 22px 0 10px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-.devlog { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
-.devlog li { display: flex; flex-direction: column; gap: 2px; font-size: 15px; line-height: 1.45; }
-.devlog time { font-size: 13px; color: var(--muted); }
-.built { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
-.built li { display: flex; justify-content: space-between; gap: 10px; font-size: 15px; } .built a { display: inline-flex; align-items: center; gap: 4px; font-weight: 700; padding: 6px 0; } .built span { color: var(--muted); font-size: 14px; padding: 6px 0; text-align: right; }
-#built-with.flash { animation: flash 1.5s; } @keyframes flash { 30% { background: color-mix(in srgb, var(--accent) 15%, transparent); } }
-.dp-links { display: flex; flex-wrap: wrap; gap: 8px; }
 .icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 8px; }
 .icon:hover { background: var(--line); }
 
@@ -143,3 +128,18 @@ button { font: inherit; color: inherit; cursor: pointer; background: none; borde
 .foot-l { grid-column: 1 / -1; justify-self: start; width: 100%; max-width: 488px; }
 .foot-l:empty { display: none; }
 @media (max-width: 760px) { .foot-l { justify-self: center; } }
+
+/* ---- redesign: shared type, the mark, quieter details ---- */
+.wordmark, .game h2, .gotw-text b { font-family: var(--display, var(--font)); }
+.wm-mark { width: 0.74em; height: 0.74em; margin-right: 0.02em; }
+.wm-mark .mark-dot { transform-origin: 50px 50px; transition: transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1); }
+.wordmark:hover .mark-dot { transform: rotate(140deg); }
+.intro p { color: var(--muted); }
+.top a, .top button { color: var(--muted); }
+.live { color: var(--muted); font-size: 14px; } .live i { background: var(--green, #31664a); }
+.new { color: var(--accent); font-size: 14px; font-weight: 700; transform: none; letter-spacing: 0.02em; }
+.game small { color: var(--muted); }
+.dl-card img { width: 64%; height: auto; margin-top: 4px; border-radius: 50%; background: #6a1a2a; object-fit: cover; aspect-ratio: 1; }
+.game a:focus-visible { outline-offset: 8px; }
+.lost { margin: -20px auto 40px; max-width: 620px; padding: 12px 16px; border: 1.5px solid var(--line); border-radius: 8px; text-align: center; color: var(--muted); }
+.lost code { color: var(--ink); }

@@ -41,13 +41,13 @@ function initState(online, clock) {
   return s;
 }
 
-export function Game({ player, onEnd, muted, onToggleMute, matchLabel, online }) {
+export function Game({ player, onEnd, muted, onToggleMute, matchLabel, online, guided }) {
   const [, force] = useReducer((x) => x + 1, 0);
   const hooks = useRef(null);
   if (!hooks.current) {
     hooks.current = online
       ? { mp: true, coop: online.mode === 'coop', n: online.n, clock: () => (online.net.now() - online.startAt) / 1000, onEndNow: (r) => online.onFinal(r) }
-      : {};
+      : { guided: !!guided };
   }
   const G = useRef(null); if (!G.current) G.current = initState(online, hooks.current.clock || (() => 0));
   const endRef = useRef(onEnd); endRef.current = onEnd;

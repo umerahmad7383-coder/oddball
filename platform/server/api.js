@@ -248,6 +248,7 @@ export function buildApi() {
       payments: { ready: kofiConfigured() && !!site.kofi_url, provider: 'Ko-fi', url: site.kofi_url || null, manageUrl: site.kofi_manage_url || null, test: process.env.KOFI_TEST_MODE === '1' },
       coffee: { amounts: site.coffee_amounts || [3, 5, 10], url: site.kofi_url || null },
       newsletter: { open: mailConfigured() },
+      contact: !!site.contact_email,
       me: null,
     };
     if (u) {

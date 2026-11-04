@@ -179,6 +179,26 @@ export function Handoff({ match, onGo, onQuit }) {
     </Screen>
   );
 }
+/* What hurt most this run, and one thing to try next time. */
+const CAUSE = {
+  download: ['Fake downloads', 'Hover every DOWNLOAD button and read the status bar. Only the link ending in the exact file name is real.'],
+  tech: ['Kevin from tech support', 'Don’t chase his X. Open Task Manager from the taskbar and end his process. He bills by the second.'],
+  crypto: ['The crypto exchange', 'Sell the moment the news turns suspicious. The rug pull always comes.'],
+  antivirus: ['The fake antivirus', 'Every big button costs money. The real exit is hidden in the fine print, the licence box or the file list.'],
+  app: ['Programs launching themselves', 'Close them the moment they appear, and click the fan when the CPU passes 80°C.'],
+  prize: ['Prize pop-ups', 'Never claim. The X on a prize pop-up is the real one.'],
+};
+function advice(r) {
+  const pickTop = (o) => Object.entries(o || {}).filter(([k]) => CAUSE[k]).sort((a, b) => b[1] - a[1])[0];
+  if (r.reason === 'meltdown') {
+    const t = pickTop(r.heatBy);
+    return t ? { what: `${CAUSE[t[0]][0]} heated your CPU the most.`, tip: CAUSE[t[0]][1] } : { what: 'Too many windows stayed open.', tip: 'Open windows heat the CPU even when you ignore them. Close what you can and use the fan.' };
+  }
+  const t = pickTop(r.lostBy);
+  if (!t) return r.won ? null : { what: 'The run ended early.', tip: 'Try a full three minutes next time.' };
+  const what = `${CAUSE[t[0]][0]} cost you the most: ${fmtMoney(Math.round(t[1]))}.`;
+  return { what, tip: CAUSE[t[0]][1] };
+}
 export function Result({ last, match, onAgain, onMenu, onNext, onMatchResult }) {
   const r = last.result;
   const title = r.won ? 'SURVIVED' : r.reason === 'bankrupt' ? 'BANKRUPT' : r.reason === 'meltdown' ? 'MELTDOWN' : 'RUN ENDED';
@@ -189,6 +209,7 @@ export function Result({ last, match, onAgain, onMenu, onNext, onMatchResult }) 
         <div className="res-title">{title}</div>
         <div className="res-player">{last.player}{match ? ` — round ${match.done ? match.rounds : (match.turn === 0 ? match.round : match.round + 1)} of ${match.rounds}` : ''}</div>
         <div className="res-score"><small>Score</small><b>{r.score.toLocaleString()}</b></div>
+        {(() => { const a = advice(r); return a ? <div className="res-advice" role="status"><b>{r.won ? 'Biggest leak:' : 'What got you:'}</b> {a.what} <span><b>Next time:</b> {a.tip}</span></div> : null; })()}
         {(last.records.length > 0 || last.rank >= 0) && (
           <div className="flex flex-wrap justify-center gap-1.5">
             {last.records.map((t) => <span key={t} className="badge"><Icon name="Sparkles" size={13} /> New record: {t}</span>)}
@@ -256,7 +277,7 @@ export function Leaderboard({ store, onBack, onReset }) {
         <div className="records">
           <div><Icon name="Trophy" size={18} /><small>High score</small><b>{b.score.toLocaleString()}</b></div>
           <div><Icon name="Timer" size={18} /><small>Longest survival</small><b>{fmtTime(b.survival)}</b></div>
-          <div><Icon name="Wallet" size={18} /><small>Most money kept</small><b>{fmtMoney(b.money)}</b></div>
+          <div><Icon name="Wallet" size={18} /><small>Most money after a win</small><b>{fmtMoney(b.money)}</b></div>
           <div><Icon name="ShieldCheck" size={18} /><small>Most scams beaten</small><b>{b.defeated}</b></div>
         </div>
         <div className="xp-dialog res-box">

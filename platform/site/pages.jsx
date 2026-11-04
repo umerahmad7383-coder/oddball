@@ -3,6 +3,7 @@ import { Check, Lock, Copy, Coffee, Search, ExternalLink, LogOut, Shield, Eye } 
 import { api, track } from '../client/api.js';
 import { applyCosmetics } from '../client/cosmetics.js';
 import { ProfileCard, ItemPreview, BadgeIcon } from './profile.jsx';
+import { DEV_LOG, BUILT_WITH } from '../site.config.js';
 
 const money = (cents, cur = 'USD') => { try { return new Intl.NumberFormat('en', { style: 'currency', currency: cur, maximumFractionDigits: cents % 100 ? 2 : 0 }).format(cents / 100); } catch (e) { return `$${(cents / 100).toFixed(2)}`; } };
 const date = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '');
@@ -377,14 +378,17 @@ export function PublicProfile({ name }) {
 }
 export function Notes() {
   const [s] = useLoad('/api/notes');
-  if (s.loading) return <Loading />;
   const d = s.data || { notes: [], locked: 0 };
+  // posts written in the admin dashboard, then the built-in changelog, newest first
+  const posts = [...d.notes.map((n) => ({ key: n.id, title: n.title, body: n.body, at: n.at, tier: n.tier })), ...DEV_LOG.map((x, i) => ({ key: `log${i}`, title: null, body: x.text, at: x.date }))];
   return (
     <div className="narrow">
-      <header className="page-head"><h1>Dev notes</h1><p>What we’re building, and why.</p></header>
-      {d.notes.length === 0 && <p className="muted">No notes yet.</p>}
-      {d.notes.map((n) => <article key={n.id} className="note"><h2>{n.title}</h2><time className="muted small">{date(n.at)}{n.tier ? ' · supporters' : ''}</time><p>{n.body}</p></article>)}
+      <header className="page-head"><h1>Notes</h1><p>What changed, what’s next, and how it’s made.</p></header>
+      {s.loading && <Loading />}
+      {posts.map((n) => <article key={n.key} className="note">{n.title && <h2>{n.title}</h2>}<time className="muted small">{typeof n.at === 'string' && !/\d{4}-/.test(n.at) ? n.at : date(n.at)}{n.tier ? ' · for supporters' : ''}</time><p>{n.body}</p></article>)}
       {d.locked > 0 && <p className="muted"><Lock size={14} /> {d.locked} more note{d.locked > 1 ? 's are' : ' is'} for supporters. <a className="link" href="/support">Become one</a>.</p>}
+      <h2>How it’s made</h2>
+      <ul className="built-list">{BUILT_WITH.map((b) => <li key={b.name}><a className="link" href={b.url} target="_blank" rel={b.affiliate ? 'sponsored noreferrer' : 'noreferrer'}>{b.name}</a> <span className="muted">{b.what}{b.affiliate ? ' (affiliate link)' : ''}</span></li>)}</ul>
     </div>
   );
 }
@@ -405,7 +409,7 @@ export function Advertise() {
       <h2>Rules we keep</h2>
       <ul><li>Everything paid is labelled.</li><li>Sponsored games stay free to play.</li><li>Sponsors never change a game without our say-so.</li><li>We don’t share anything about our visitors or subscribers.</li></ul>
       <h2>Get in touch</h2>
-      {d.contactEmail ? <a className="btn solid" href={`mailto:${d.contactEmail}?subject=Advertising%20on%20oddball`}>Email {d.contactEmail}</a> : <p className="muted">Contact details are coming soon.</p>}
+      {d.contactEmail ? <a className="btn solid" href={`mailto:${d.contactEmail}?subject=Advertising%20on%20oddball`}>Email {d.contactEmail}</a> : <p className="muted">We aren’t taking sponsors yet. <a className="link" href="/">Back to the games</a>.</p>}
     </div>
   );
 }
@@ -417,7 +421,7 @@ export function Privacy() {
       <h2>Without an account</h2>
       <p>You can play every game without signing up. Games remember your best scores in your own browser. We count page visits with an anonymous counter that uses no cookies and stores no IP addresses or ids.</p>
       <h2>With an account</h2>
-      <p>We store your username, a scrambled version of your password, your profile choices, and the games you finish while signed in. One cookie keeps you signed in. You can delete your account and all of this from your profile page.</p>
+      <p>We store your username, a password hash (never the password itself), your profile choices, and the games you finish while signed in. One cookie keeps you signed in. You can delete your account and all of this from your profile page.</p>
       <h2>Payments</h2>
       <p>Memberships and coffees are paid on Ko-fi. We never see card details. Ko-fi tells us the payment happened, the amount, the tier and the payer’s email, which we use only to match renewals to your account.</p>
       <h2>Newsletter</h2>
@@ -435,8 +439,14 @@ export function NewsletterPage() {
     const confirm = sp.get('confirm'), unsub = sp.get('unsubscribe');
     if (confirm) api('/api/newsletter/confirm', { method: 'POST', body: { token: confirm } }).then(() => setMsg('You’re on the list. Thanks!')).catch((e) => setMsg(e.message));
     else if (unsub) api('/api/newsletter/unsubscribe', { method: 'POST', body: { token: unsub } }).then(() => setMsg('You’re unsubscribed. No more emails.')).catch((e) => setMsg(e.message));
-    else setMsg('Nothing to do here.');
+    else setMsg(null);
   }, []);
-  return <div className="narrow"><h1>Newsletter</h1><p>{msg}</p><a className="link" href="/">Back to oddball</a></div>;
+  return (
+    <div className="narrow">
+      <h1>Newsletter</h1>
+      {msg ? <p>{msg}</p> : <p>This page confirms or cancels newsletter signups from the links in our emails. To sign up, use the form on the <a className="link" href="/support#newsletter">support page</a> when it’s open.</p>}
+      <a className="link" href="/">Back to oddball</a>
+    </div>
+  );
 }
 export { BadgeIcon };
